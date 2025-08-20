@@ -90,7 +90,7 @@ export function InputField({
     styles.container,
     {
       borderColor: error
-        ? BrandColors.primaryBlack
+        ? BrandColors.primary
         : isFocused
         ? BrandColors.primaryBlack
         : BrandColors.black4,
