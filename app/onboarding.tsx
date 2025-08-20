@@ -4,8 +4,8 @@ import { router } from "expo-router";
 
 export default function OnboardingPage() {
   const handleGetStarted = () => {
-    // Navigate to the main app (tabs)
-    router.replace("/(tabs)");
+    // Navigate to sign-up screen
+    router.push("/signup");
   };
 
   const handleSeeHowItWorks = () => {

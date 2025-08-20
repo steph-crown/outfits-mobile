@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   outline: {
     backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: BrandColors.primary,
+    borderColor: BrandColors.primaryBlack,
   },
   ghost: {
     backgroundColor: "transparent",
@@ -144,11 +144,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     minHeight: 36,
   },
+
   medium: {
     paddingVertical: 16,
     paddingHorizontal: 20,
-    minHeight: 48,
+    height: 50,
   },
+
   large: {
     paddingVertical: 16,
     paddingHorizontal: 24,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     color: BrandColors.primaryBlack,
   },
   outlineText: {
-    color: BrandColors.primary,
+    color: BrandColors.primaryBlack,
   },
   ghostText: {
     color: BrandColors.primary,
@@ -187,6 +189,8 @@ const styles = StyleSheet.create({
   },
   mediumText: {
     fontSize: 14,
+    // backgroundColor: "red",
+    lineHeight: 14,
   },
   largeText: {
     fontSize: 18,
