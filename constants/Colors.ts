@@ -1,26 +1,67 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * OutFits Brand Colors
+ * Official color palette for the OutFits mobile application
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Brand color constants
+export const BrandColors = {
+  primary: "#DB0F4B",
+  primaryBlack: "#050413",
+  white: "#FFFFFF",
+  primaryWhite: "#F7FAFC",
+  primaryLighter: "#FDE2EA",
+  black4: "#D9D8DB",
+  black3: "#A0AEC0",
+} as const;
 
+// Theme-based color configurations
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: BrandColors.primaryBlack,
+    background: BrandColors.white,
+    surface: BrandColors.primaryWhite,
+    primary: BrandColors.primary,
+    secondary: BrandColors.primaryLighter,
+    tint: BrandColors.primary,
+    icon: BrandColors.black3,
+    tabIconDefault: BrandColors.black3,
+    tabIconSelected: BrandColors.primary,
+    border: BrandColors.black4,
+    muted: BrandColors.black3,
+    card: BrandColors.white,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: BrandColors.primaryWhite,
+    background: BrandColors.primaryBlack,
+    surface: "#1A1A2E",
+    primary: BrandColors.primary,
+    secondary: BrandColors.primaryLighter,
+    tint: BrandColors.primary,
+    icon: BrandColors.black3,
+    tabIconDefault: BrandColors.black3,
+    tabIconSelected: BrandColors.primary,
+    border: "#2D2D3A",
+    muted: BrandColors.black3,
+    card: "#16162A",
   },
+};
+
+// Semantic color helpers
+export const SemanticColors = {
+  success: "#10B981",
+  warning: "#F59E0B",
+  error: "#EF4444",
+  info: "#3B82F6",
+} as const;
+
+// Color utility functions
+export const getColor = (colorName: keyof typeof BrandColors): string => {
+  return BrandColors[colorName];
+};
+
+export const getThemedColor = (
+  theme: "light" | "dark",
+  colorName: keyof typeof Colors.light
+): string => {
+  return Colors[theme][colorName];
 };

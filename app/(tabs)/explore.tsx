@@ -19,12 +19,22 @@ export default function TabTwoScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="heading1">Typography</ThemedText>
+        <ThemedText type="heading1">OutFits Design System</ThemedText>
       </ThemedView>
       <ThemedText type="body">
-        Explore the beautiful Mona Sans font family used throughout the OutFits
-        app.
+        Explore the beautiful Mona Sans font family and brand colors used throughout the OutFits app.
       </ThemedText>
+      
+      <ThemedView style={styles.section}>
+        <ThemedText type="heading2">Typography Showcase</ThemedText>
+        <ThemedText type="heading1">Heading 1 - Bold</ThemedText>
+        <ThemedText type="heading2">Heading 2 - SemiBold</ThemedText>
+        <ThemedText type="heading3">Heading 3 - SemiBold</ThemedText>
+        <ThemedText type="title">Title - Medium</ThemedText>
+        <ThemedText type="subtitle">Subtitle - Medium</ThemedText>
+        <ThemedText type="body">Body text - Regular</ThemedText>
+        <ThemedText type="caption">Caption text - Regular</ThemedText>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
@@ -38,6 +48,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
+    gap: 8,
+  },
+  section: {
+    marginTop: 24,
     gap: 8,
   },
 });
