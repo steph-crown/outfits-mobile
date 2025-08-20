@@ -10,6 +10,10 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Mona-Sans-Regular': require('../assets/fonts/Mona-Sans-Regular.ttf'),
+    'Mona-Sans-Medium': require('../assets/fonts/Mona-Sans-Medium.ttf'),
+    'Mona-Sans-SemiBold': require('../assets/fonts/Mona-Sans-SemiBold.ttf'),
+    'Mona-Sans-Bold': require('../assets/fonts/Mona-Sans-Bold.ttf'),
   });
 
   if (!loaded) {

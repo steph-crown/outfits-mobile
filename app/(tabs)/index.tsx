@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -17,22 +17,22 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="heading1">OutFits</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+        <ThemedText type="heading2">Welcome to OutFits!</ThemedText>
+        <ThemedText type="body">
+          Your personal style companion powered by beautiful Mona Sans typography.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="heading3">Typography Showcase</ThemedText>
+        <ThemedText type="body">
+          This app uses <ThemedText type="defaultSemiBold">Mona Sans</ThemedText> font family for a modern, clean look.
+        </ThemedText>
+        <ThemedText type="caption">
+          Available weights: Regular, Medium, SemiBold, and Bold
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
