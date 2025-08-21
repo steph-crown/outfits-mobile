@@ -55,6 +55,7 @@ export default function TabLayout() {
         tabBarShowLabel: true,
         tabBarItemStyle: styles.tabBarItem,
         tabBarLabelStyle: styles.tabBarLabel,
+        tabBarIconStyle: styles.tabBarIcon,
         tabBarActiveTintColor: BrandColors.primaryBlack,
         tabBarInactiveTintColor: BrandColors.black2,
       }}
@@ -66,6 +67,23 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <HomeIcon selected={focused} size={28} />
           ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={[
+                styles.tabBarLabel,
+                {
+                  fontFamily: focused
+                    ? Fonts.MonaSans.Bold
+                    : Fonts.MonaSans.SemiBold,
+                  color: focused
+                    ? BrandColors.primaryBlack
+                    : BrandColors.black2,
+                },
+              ]}
+            >
+              Outfits
+            </Text>
+          ),
         }}
       />
       <Tabs.Screen
@@ -74,6 +92,23 @@ export default function TabLayout() {
           title: "Explore",
           tabBarIcon: ({ focused }) => (
             <SearchIcon selected={focused} size={28} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={[
+                styles.tabBarLabel,
+                {
+                  fontFamily: focused
+                    ? Fonts.MonaSans.Bold
+                    : Fonts.MonaSans.SemiBold,
+                  color: focused
+                    ? BrandColors.primaryBlack
+                    : BrandColors.black2,
+                },
+              ]}
+            >
+              Explore
+            </Text>
           ),
         }}
       />
@@ -96,6 +131,23 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <CollectionsIcon selected={focused} size={28} />
           ),
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={[
+                styles.tabBarLabel,
+                {
+                  fontFamily: focused
+                    ? Fonts.MonaSans.Bold
+                    : Fonts.MonaSans.SemiBold,
+                  color: focused
+                    ? BrandColors.primaryBlack
+                    : BrandColors.black2,
+                },
+              ]}
+            >
+              Collections
+            </Text>
+          ),
         }}
       />
       <Tabs.Screen
@@ -103,6 +155,23 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ focused }) => <ProfileIcon focused={focused} />,
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={[
+                styles.tabBarLabel,
+                {
+                  fontFamily: focused
+                    ? Fonts.MonaSans.Bold
+                    : Fonts.MonaSans.SemiBold,
+                  color: focused
+                    ? BrandColors.primaryBlack
+                    : BrandColors.black2,
+                },
+              ]}
+            >
+              Profile
+            </Text>
+          ),
         }}
       />
     </Tabs>
@@ -114,23 +183,29 @@ const styles = StyleSheet.create({
     backgroundColor: BrandColors.white,
     borderTopWidth: 1,
     borderTopColor: BrandColors.blackLighter,
-    paddingTop: 14,
-    paddingBottom: 14, // Account for safe area
-    height: 80,
+    height: 72,
     paddingHorizontal: 2,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   tabBarItem: {
     // backgroundColor: "red",
+    height: 72,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  tabBarIcon: {
+    marginBottom: 2,
   },
   tabBarLabel: {
     fontSize: 12,
-    // fontFamily: "Mona-Sans-Medium",
-    fontFamily: Fonts.MonaSans.SemiBold,
-    marginTop: 4,
+    marginTop: 2,
   },
   addButton: {
-    width: 50,
-    height: 50,
+    width: 52,
+    height: 52,
     borderRadius: 28,
     backgroundColor: BrandColors.primaryBlack,
     justifyContent: "center",

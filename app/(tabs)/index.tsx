@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Path } from "react-native-svg";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -122,6 +123,22 @@ export default function HomeScreen() {
             </Text>
           </TouchableOpacity>
         ))}
+
+        <TouchableOpacity
+          style={[styles.filterPill]}
+          onPress={() => {
+            return;
+          }}
+        >
+          <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <Path
+              d="M12 8.66671H8.66668V12C8.66668 12.3667 8.36668 12.6667 8.00001 12.6667C7.63334 12.6667 7.33334 12.3667 7.33334 12V8.66671H4.00001C3.63334 8.66671 3.33334 8.36671 3.33334 8.00004C3.33334 7.63337 3.63334 7.33337 4.00001 7.33337H7.33334V4.00004C7.33334 3.63337 7.63334 3.33337 8.00001 3.33337C8.36668 3.33337 8.66668 3.63337 8.66668 4.00004V7.33337H12C12.3667 7.33337 12.6667 7.63337 12.6667 8.00004C12.6667 8.36671 12.3667 8.66671 12 8.66671Z"
+              fill="#828282"
+            />
+          </Svg>
+
+          {/* <Text style={[styles.filterText]}>+</Text> */}
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Outfits Grid */}
@@ -131,7 +148,7 @@ export default function HomeScreen() {
         keyExtractor={(item, index) => `pair-${index}`}
         contentContainerStyle={[
           styles.outfitsContainer,
-          { paddingBottom: insets.bottom + 20 },
+          { paddingBottom: insets.bottom + 10 },
         ]}
         showsVerticalScrollIndicator={false}
       />
@@ -165,41 +182,56 @@ const styles = StyleSheet.create({
     color: BrandColors.primaryBlack,
   },
   filtersContainer: {
-    paddingBottom: 16,
+    marginBottom: 4,
+    // backgroundColor: "yellow",
+    // height: "auto",
   },
   filtersContent: {
     paddingHorizontal: 12,
     gap: 12,
+    height: 58,
+    // backgroundColor: "blue",
   },
   filterPill: {
-    backgroundColor: BrandColors.white,
+    // backgroundColor: BrandColors.white,
+
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: BrandColors.blackLighter,
+    borderColor: BrandColors.black4,
+    height: 32,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   activeFilterPill: {
-    backgroundColor: BrandColors.primary,
-    borderColor: BrandColors.primary,
+    // backgroundColor: BrandColors.primary,
+    backgroundColor: BrandColors.primaryLighter,
+    // borderColor: BrandColors.primary,
+    borderColor: "#E8E0E2",
   },
   filterText: {
-    fontSize: 14,
-    fontFamily: "Mona-Sans-Medium",
-    color: BrandColors.black3,
+    fontSize: 12,
+    fontFamily: Fonts.MonaSans.SemiBold,
+    color: BrandColors.black2,
+    // backgroundColor: "yellow",
+    lineHeight: 14,
   },
   activeFilterText: {
-    color: BrandColors.white,
+    color: BrandColors.primary,
   },
   outfitsContainer: {
     paddingHorizontal: 12,
   },
   outfitRow: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 8,
+    gap: 10,
+    marginBottom: 0,
+    // backgroundColor: "red",
   },
   outfitColumn: {
     flex: 1,
+    // backgroundColor: "yellow",
   },
 });
