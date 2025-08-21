@@ -7,7 +7,6 @@ import { useAuthStore } from "@/store/authStore";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -107,111 +106,108 @@ export default function SignUpScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-            <Text style={styles.backButtonText}>
-              <Svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                // xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="M17 11H9.41002L12.71 7.71C12.8983 7.52169 13.0041 7.2663 13.0041 7C13.0041 6.7337 12.8983 6.4783 12.71 6.29C12.5217 6.10169 12.2663 5.99591 12 5.99591C11.7337 5.99591 11.4783 6.10169 11.29 6.29L6.29002 11.29C6.19898 11.3851 6.12761 11.4972 6.08002 11.62C5.98 11.8635 5.98 12.1365 6.08002 12.38C6.12761 12.5027 6.19898 12.6149 6.29002 12.71L11.29 17.71C11.383 17.8037 11.4936 17.8781 11.6154 17.9289C11.7373 17.9797 11.868 18.0058 12 18.0058C12.132 18.0058 12.2627 17.9797 12.3846 17.9289C12.5065 17.8781 12.6171 17.8037 12.71 17.71C12.8037 17.617 12.8781 17.5064 12.9289 17.3846C12.9797 17.2627 13.0058 17.132 13.0058 17C13.0058 16.868 12.9797 16.7373 12.9289 16.6154C12.8781 16.4936 12.8037 16.383 12.71 16.29L9.41002 13H17C17.2652 13 17.5196 12.8946 17.7071 12.7071C17.8947 12.5196 18 12.2652 18 12C18 11.7348 17.8947 11.4804 17.7071 11.2929C17.5196 11.1054 17.2652 11 17 11Z"
-                  fill="black"
-                />
-              </Svg>
-            </Text>
-          </TouchableOpacity>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+          <Text style={styles.backButtonText}>
+            <Svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              // xmlns="http://www.w3.org/2000/svg"
+            >
+              <Path
+                d="M17 11H9.41002L12.71 7.71C12.8983 7.52169 13.0041 7.2663 13.0041 7C13.0041 6.7337 12.8983 6.4783 12.71 6.29C12.5217 6.10169 12.2663 5.99591 12 5.99591C11.7337 5.99591 11.4783 6.10169 11.29 6.29L6.29002 11.29C6.19898 11.3851 6.12761 11.4972 6.08002 11.62C5.98 11.8635 5.98 12.1365 6.08002 12.38C6.12761 12.5027 6.19898 12.6149 6.29002 12.71L11.29 17.71C11.383 17.8037 11.4936 17.8781 11.6154 17.9289C11.7373 17.9797 11.868 18.0058 12 18.0058C12.132 18.0058 12.2627 17.9797 12.3846 17.9289C12.5065 17.8781 12.6171 17.8037 12.71 17.71C12.8037 17.617 12.8781 17.5064 12.9289 17.3846C12.9797 17.2627 13.0058 17.132 13.0058 17C13.0058 16.868 12.9797 16.7373 12.9289 16.6154C12.8781 16.4936 12.8037 16.383 12.71 16.29L9.41002 13H17C17.2652 13 17.5196 12.8946 17.7071 12.7071C17.8947 12.5196 18 12.2652 18 12C18 11.7348 17.8947 11.4804 17.7071 11.2929C17.5196 11.1054 17.2652 11 17 11Z"
+                fill="black"
+              />
+            </Svg>
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: Math.max(insets.bottom, 24) },
+        ]}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets={true}
+      >
+        {/* Title */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            Create your <Text style={styles.titleAccent}>Outfits</Text>
+            {"\n"}account
+          </Text>
+          <Text style={styles.subtitle}>Let us create your account</Text>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={[
-            styles.content,
-            { paddingBottom: Math.max(insets.bottom, 24) },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Title */}
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              Create your <Text style={styles.titleAccent}>Outfits</Text>
-              {"\n"}account
-            </Text>
-            <Text style={styles.subtitle}>Let us create your account</Text>
-          </View>
+        {/* Continue with Google Button */}
+        <Button
+          title="Continue with Google"
+          onPress={handleContinueWithGoogle}
+          variant="outline"
+          fullWidth
+          style={styles.googleButton}
+          icon={<GoogleIcon size={24} />}
+        />
 
-          {/* Continue with Google Button */}
-          <Button
-            title="Continue with Google"
-            onPress={handleContinueWithGoogle}
-            variant="outline"
-            fullWidth
-            style={styles.googleButton}
-            icon={<GoogleIcon size={24} />}
+        {/* Divider */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* Form */}
+        <View style={styles.form}>
+          <InputField
+            label="Email address"
+            value={form.email}
+            onChangeText={(value) => handleInputChange("email", value)}
+            icon={<MailIcon />}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={errors.email}
           />
 
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Form */}
-          <View style={styles.form}>
-            <InputField
-              label="Email address"
-              value={form.email}
-              onChangeText={(value) => handleInputChange("email", value)}
-              icon={<MailIcon />}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              error={errors.email}
-            />
-
-            <InputField
-              label="Password"
-              value={form.password}
-              onChangeText={(value) => handleInputChange("password", value)}
-              icon={<LockIcon />}
-              isPassword
-              autoCapitalize="none"
-              autoCorrect={false}
-              error={errors.password}
-            />
-          </View>
-
-          {/* Create Account Button */}
-          <Button
-            title="Create account"
-            onPress={handleCreateAccount}
-            variant="primary"
-            size="medium"
-            fullWidth
-            loading={isLoading}
-            style={styles.createAccountButton}
+          <InputField
+            label="Password"
+            value={form.password}
+            onChangeText={(value) => handleInputChange("password", value)}
+            icon={<LockIcon />}
+            isPassword
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={errors.password}
           />
+        </View>
 
-          {/* Already have account */}
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
-            <TouchableOpacity onPress={handleLogIn}>
-              <Text style={styles.loginLink}>Log in</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+        {/* Create Account Button */}
+        <Button
+          title="Create account"
+          onPress={handleCreateAccount}
+          variant="primary"
+          size="medium"
+          fullWidth
+          loading={isLoading}
+          style={styles.createAccountButton}
+        />
+
+        {/* Already have account */}
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>Already have an account? </Text>
+          <TouchableOpacity onPress={handleLogIn}>
+            <Text style={styles.loginLink}>Log in</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
