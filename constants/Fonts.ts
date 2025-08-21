@@ -11,6 +11,9 @@ export const Fonts = {
     SemiBold: "Mona-Sans-SemiBold",
     Bold: "Mona-Sans-Bold",
   },
+  Hellix: {
+    Bold: "Hellix-Bold",
+  },
   // Legacy font (can be removed later if not needed)
   SpaceMono: "SpaceMono",
 } as const;

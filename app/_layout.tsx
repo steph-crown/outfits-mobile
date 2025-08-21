@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -6,9 +6,9 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "react-native-reanimated";
-import { Toaster } from 'sonner-native';
-import { LogBox } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Toaster } from "sonner-native";
+import { LogBox } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { SplashScreen } from "@/components/SplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -26,6 +26,7 @@ export default function RootLayout() {
     "Mona-Sans-Medium": require("../assets/fonts/Mona-Sans-Medium.ttf"),
     "Mona-Sans-SemiBold": require("../assets/fonts/Mona-Sans-SemiBold.ttf"),
     "Mona-Sans-Bold": require("../assets/fonts/Mona-Sans-Bold.ttf"),
+    "Hellix-Bold": require("../assets/fonts/Hellix-Bold.ttf"),
   });
 
   useEffect(() => {
@@ -51,7 +52,10 @@ export default function RootLayout() {
           <ThemeProvider value={DefaultTheme}>
             <Stack>
               <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="onboarding"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="signup" options={{ headerShown: false }} />
               <Stack.Screen name="login" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

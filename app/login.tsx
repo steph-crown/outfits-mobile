@@ -172,6 +172,9 @@ export default function LoginScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             error={errors.email}
+            wrapperStyle={{
+              marginBottom: 24,
+            }}
           />
 
           <InputField
@@ -183,6 +186,9 @@ export default function LoginScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             error={errors.password}
+            wrapperStyle={{
+              marginBottom: 16,
+            }}
           />
 
           {/* Forgot Password */}
@@ -298,14 +304,14 @@ const styles = StyleSheet.create({
   },
   forgotPasswordContainer: {
     alignSelf: "flex-end",
-    marginTop: 16,
+    marginTop: 0,
   },
   forgotPasswordText: {
     ...FontStyles.body,
     color: BrandColors.primaryBlack,
     fontSize: 14,
     textDecorationLine: "underline",
-    fontFamily: Fonts.MonaSans.Medium,
+    fontFamily: Fonts.MonaSans.SemiBold,
   },
   loginButton: {
     marginBottom: 24,

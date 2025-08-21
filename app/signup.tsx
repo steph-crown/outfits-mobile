@@ -174,6 +174,9 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             error={errors.email}
+            wrapperStyle={{
+              marginBottom: 24,
+            }}
           />
 
           <InputField

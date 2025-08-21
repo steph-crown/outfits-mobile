@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Animated,
   TextInputProps,
+  ViewStyle,
+  StyleProp,
 } from "react-native";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
@@ -16,6 +18,7 @@ interface InputFieldProps extends TextInputProps {
   icon?: React.ReactNode;
   error?: string;
   isPassword?: boolean;
+  wrapperStyle?: StyleProp<ViewStyle>;
   onFocus?: () => void;
   onBlur?: () => void;
 }
@@ -30,6 +33,7 @@ export function InputField({
   value,
   onChangeText,
   placeholder,
+  wrapperStyle,
   ...props
 }: InputFieldProps) {
   const [isFocused, setIsFocused] = useState(false);
@@ -99,7 +103,7 @@ export function InputField({
   ];
 
   return (
-    <View style={styles.wrapper}>
+    <View style={wrapperStyle}>
       <View style={containerStyle}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
 
@@ -134,9 +138,9 @@ export function InputField({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: 24,
-  },
+  // wrapper: {
+  //   marginBottom: 24,
+  // },
   container: {
     flexDirection: "row",
     alignItems: "center",
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     ...FontStyles.caption,
     color: BrandColors.primary,
     fontWeight: "600",
-    fontFamily: Fonts.MonaSans.Medium,
+    fontFamily: Fonts.MonaSans.SemiBold,
   },
   errorText: {
     ...FontStyles.caption,
