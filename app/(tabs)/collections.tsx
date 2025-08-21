@@ -1,17 +1,157 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BrandColors } from '@/constants/Colors';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import { BrandColors } from "@/constants/Colors";
+import { Fonts } from "@/constants/Fonts";
+import { SearchIcon } from "@/components/icons/TabIcons";
+import { InputField } from "@/components/ui";
+import { OutfitCard } from "@/components/OutfitCard";
+import {
+  dummyCollections,
+  dummyOutfits,
+  Collection,
+  Outfit,
+} from "@/types/outfit";
+import { useFilterStore } from "@/store/filterStore";
+import Svg, { Path } from "react-native-svg";
+
+const { width: screenWidth } = Dimensions.get("window");
+const OUTFIT_CARD_WIDTH = (screenWidth - 48) / 2.3; // Show about 2.3 cards
 
 export default function CollectionsScreen() {
   const insets = useSafeAreaInsets();
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const { setSelectedFilter } = useFilterStore();
+
+  // Filter collections based on search
+  const filteredCollections = dummyCollections.filter((collection) =>
+    collection.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Get outfits for a specific collection
+  const getOutfitsForCollection = (collectionId: string): Outfit[] => {
+    return dummyOutfits.filter((outfit) =>
+      outfit.collections?.some((col) => col.id === collectionId)
+    );
+  };
+
+  // Navigate to home screen with collection filter
+  const navigateToCollection = (collectionName: string) => {
+    // Set the filter in global state
+    setSelectedFilter(collectionName);
+    // Navigate to index tab
+    router.push("/(tabs)");
+  };
+
+  const renderOutfitItem = ({ item }: { item: Outfit }) => (
+    <View style={styles.outfitCardWrapper}>
+      <OutfitCard
+        outfit={item}
+        onPress={() => console.log("Outfit pressed:", item.id)}
+      />
+    </View>
+  );
+
+  const renderCollectionSection = ({
+    item: collection,
+  }: {
+    item: Collection;
+  }) => {
+    const outfits = getOutfitsForCollection(collection.id);
+
+    if (outfits.length === 0) return null;
+
+    return (
+      <View style={styles.collectionSection}>
+        {/* Collection Header */}
+        <TouchableOpacity
+          style={styles.collectionHeader}
+          onPress={() => navigateToCollection(collection.name)}
+        >
+          <Text style={styles.collectionName}>{collection.name}</Text>
+
+          <Svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <Path
+              d="M7.5 15L12.5 10L7.5 5"
+              stroke={BrandColors.black2}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        </TouchableOpacity>
+
+        {/* Horizontal Outfits List */}
+        <FlatList
+          data={outfits}
+          renderItem={renderOutfitItem}
+          keyExtractor={(outfit) => `${collection.id}-${outfit.id}`}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.outfitsList}
+          ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+        />
+      </View>
+    );
+  };
+
+  const renderHeader = () => (
+    <View style={styles.searchContainer}>
+      <View style={styles.searchInputContainer}>
+        <InputField
+          label="Search collections"
+          value={searchQuery}
+          onChangeText={(value) => setSearchQuery(value)}
+          icon={<SearchIcon />}
+          keyboardType="web-search"
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
+      {/* Add Collection Button */}
+      <TouchableOpacity style={styles.addButton}>
+        <Svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <Path
+            d="M10 4.16669V15.8334M4.16666 10H15.8333"
+            stroke={BrandColors.white}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Svg>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Collections</Text>
-        <Text style={styles.subtitle}>Coming soon...</Text>
-      </View>
+      {/* Header */}
+      <TouchableOpacity style={styles.header}>
+        <Text style={styles.title}>collections</Text>
+      </TouchableOpacity>
+
+      {/* Collections List */}
+      <FlatList
+        data={filteredCollections}
+        renderItem={renderCollectionSection}
+        keyExtractor={(collection) => collection.id}
+        ListHeaderComponent={renderHeader}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: insets.bottom + 10 },
+        ]}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={{ height: 0 }} />}
+      />
     </View>
   );
 }
@@ -21,21 +161,56 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: BrandColors.white,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+  header: {
+    paddingHorizontal: 12,
+    paddingBottom: 16,
+    alignItems: "center",
   },
   title: {
-    fontSize: 24,
-    fontFamily: 'Mona-Sans-Bold',
-    color: BrandColors.primaryBlack,
-    marginBottom: 8,
+    fontSize: 28,
+    fontFamily: Fonts.Hellix.Bold,
+    color: BrandColors.primary,
   },
-  subtitle: {
-    fontSize: 16,
-    fontFamily: 'Mona-Sans-Regular',
-    color: BrandColors.black3,
+  content: {
+    paddingHorizontal: 12,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    gap: 12,
+  },
+  searchInputContainer: {
+    flex: 1,
+  },
+  addButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: BrandColors.primaryBlack,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  collectionSection: {
+    marginBottom: 8,
+    // backgroundColor: "red",
+  },
+  collectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+    paddingVertical: 0,
+  },
+  collectionName: {
+    fontSize: 18,
+    fontFamily: Fonts.MonaSans.Bold,
+    color: BrandColors.primaryBlack,
+  },
+  outfitsList: {
+    paddingLeft: 0,
+  },
+  outfitCardWrapper: {
+    width: OUTFIT_CARD_WIDTH,
   },
 });

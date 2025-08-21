@@ -4,6 +4,8 @@ import { InputField } from "@/components/ui";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { dummyCollections, dummyOutfits } from "@/types/outfit";
+import { useLocalSearchParams } from "expo-router";
+import { useFilterStore } from "@/store/filterStore";
 import React from "react";
 import {
   FlatList,
@@ -25,10 +27,18 @@ export const scrollHomeToTop = () => {
 };
 
 export default function HomeScreen() {
+  const params = useLocalSearchParams();
+  const { selectedFilter, setSelectedFilter } = useFilterStore();
   const insets = useSafeAreaInsets();
-  const [selectedFilter, setSelectedFilter] = React.useState("All");
   const [searchQuery, setSearchQuery] = React.useState("");
   const flatListRef = React.useRef<FlatList>(null);
+
+  // Handle collection filter from navigation
+  React.useEffect(() => {
+    if (params.filter && typeof params.filter === "string") {
+      setSelectedFilter(params.filter);
+    }
+  }, [params.filter, setSelectedFilter]);
 
   const scrollToTop = () => {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
