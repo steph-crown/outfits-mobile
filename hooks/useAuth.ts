@@ -12,8 +12,8 @@ export function useAuthRedirect() {
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated) {
-        // User is authenticated, redirect to dashboard
-        router.replace('/dashboard');
+        // User is authenticated, redirect to tabs (home)
+        router.replace('/(tabs)');
       } else {
         // User is not authenticated, redirect to onboarding
         router.replace('/onboarding');

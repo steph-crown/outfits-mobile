@@ -53,6 +53,12 @@ export default function SignUpScreen() {
     }
 
     setErrors(newErrors);
+
+    // Show general toast if there are validation errors
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fix the errors in the form");
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -79,9 +85,9 @@ export default function SignUpScreen() {
         password: form.password,
       });
 
-      // Show success toast and navigate to dashboard
+      // Show success toast and navigate to home
       toast.success("Account created successfully! Welcome to OutFits 🎉");
-      router.replace("/dashboard");
+      router.replace("/(tabs)");
     } catch (err) {
       void err;
       // console.error("Error creating account:", err);
@@ -170,6 +176,7 @@ export default function SignUpScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              error={errors.email}
             />
 
             <InputField
@@ -180,6 +187,7 @@ export default function SignUpScreen() {
               isPassword
               autoCapitalize="none"
               autoCorrect={false}
+              error={errors.password}
             />
           </View>
 
@@ -207,7 +215,7 @@ export default function SignUpScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: BrandColors.white,

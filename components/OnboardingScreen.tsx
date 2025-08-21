@@ -1,12 +1,20 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
 import { FireIcon, EyeIcon } from "@/components/icons";
 import { Button } from "@/components/ui";
+import { router } from "expo-router";
+import React from "react";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 interface OnboardingScreenProps {
   onGetStarted: () => void;
@@ -17,6 +25,11 @@ export function OnboardingScreen({
   onGetStarted,
   onSeeHowItWorks,
 }: OnboardingScreenProps) {
+  const handleLogIn = () => {
+    console.log("Navigate to log in");
+    router.push("/login");
+  };
+
   const insets = useSafeAreaInsets();
 
   return (
@@ -77,7 +90,10 @@ export function OnboardingScreen({
           {/* Already have an account? */}
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
-            <Text style={styles.loginLink}>Log in</Text>
+
+            <TouchableOpacity onPress={handleLogIn}>
+              <Text style={styles.loginLink}>Log in</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

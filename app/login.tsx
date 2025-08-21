@@ -51,6 +51,12 @@ export default function LoginScreen() {
     }
 
     setErrors(newErrors);
+    
+    // Show general toast if there are validation errors
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fix the errors in the form");
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 
@@ -77,9 +83,9 @@ export default function LoginScreen() {
         password: form.password,
       });
 
-      // Show success toast and navigate to dashboard
+      // Show success toast and navigate to home
       toast.success("Welcome back! 👋");
-      router.replace("/dashboard");
+      router.replace("/(tabs)");
     } catch (err) {
       void err;
       // console.error("Error logging in:", err);
@@ -168,6 +174,7 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              error={errors.email}
             />
 
             <InputField
@@ -178,6 +185,7 @@ export default function LoginScreen() {
               isPassword
               autoCapitalize="none"
               autoCorrect={false}
+              error={errors.password}
             />
 
             {/* Forgot Password */}
