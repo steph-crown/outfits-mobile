@@ -12,6 +12,7 @@ export const BrandColors = {
   primaryLighter: "#FDE2EA",
   black4: "#D9D8DB",
   black3: "#A0AEC0",
+  black2: "#828282",
   blackLighter: "#ECEFF3",
 } as const;
 

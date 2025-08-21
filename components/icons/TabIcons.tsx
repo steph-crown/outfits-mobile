@@ -1,12 +1,15 @@
-import React from 'react';
-import Svg, { Path } from 'react-native-svg';
+import React from "react";
+import Svg, { Path } from "react-native-svg";
 
 interface TabIconProps {
   size?: number;
   color?: string;
 }
 
-export const HomeIcon: React.FC<TabIconProps & { selected?: boolean }> = ({ size = 24, selected = false }) => {
+export const HomeIcon: React.FC<TabIconProps & { selected?: boolean }> = ({
+  size = 28,
+  selected = false,
+}) => {
   if (selected) {
     return (
       <Svg width={size} height={size} viewBox="0 0 29 28" fill="none">
@@ -38,7 +41,10 @@ export const HomeIcon: React.FC<TabIconProps & { selected?: boolean }> = ({ size
   );
 };
 
-export const SearchIcon: React.FC<TabIconProps & { selected?: boolean }> = ({ size = 24, selected = false }) => {
+export const SearchIcon: React.FC<TabIconProps & { selected?: boolean }> = ({
+  size = 28,
+  selected = false,
+}) => {
   if (selected) {
     return (
       <Svg width={size} height={size} viewBox="0 0 29 28" fill="none">
@@ -82,7 +88,9 @@ export const SearchIcon: React.FC<TabIconProps & { selected?: boolean }> = ({ si
   );
 };
 
-export const CollectionsIcon: React.FC<TabIconProps & { selected?: boolean }> = ({ size = 24, selected = false }) => {
+export const CollectionsIcon: React.FC<
+  TabIconProps & { selected?: boolean }
+> = ({ size = 28, selected = false }) => {
   if (selected) {
     return (
       <Svg width={size} height={size} viewBox="0 0 29 28" fill="none">

@@ -1,4 +1,4 @@
-import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -8,7 +8,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import "react-native-reanimated";
 import { Toaster } from "sonner-native";
 import { LogBox } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { SplashScreen } from "@/components/SplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
