@@ -26,10 +26,29 @@ import Svg, { Path } from "react-native-svg";
 const { width: screenWidth } = Dimensions.get("window");
 const OUTFIT_CARD_WIDTH = (screenWidth - 48) / 2.3; // Show about 2.3 cards
 
+// Global ref for scroll to top functionality from tab bar
+export const collectionsScrollRef = React.createRef<FlatList>();
+
+// Global function to scroll collections screen to top
+export const scrollCollectionsToTop = () => {
+  collectionsScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
+};
+
 export default function CollectionsScreen() {
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { setSelectedFilter } = useFilterStore();
+  const flatListRef = React.useRef<FlatList>(null);
+
+  const scrollToTop = () => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    collectionsScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
+
+  // Set the global ref to this component's ref
+  React.useEffect(() => {
+    (collectionsScrollRef as any).current = flatListRef.current;
+  }, []);
 
   // Filter collections based on search
   const filteredCollections = dummyCollections.filter((collection) =>
@@ -43,11 +62,11 @@ export default function CollectionsScreen() {
     );
   };
 
-  // Navigate to home screen with collection filter
+  // Navigate to home screen with collection filter using stack navigation
   const navigateToCollection = (collectionName: string) => {
     // Set the filter in global state
     setSelectedFilter(collectionName);
-    // Navigate to index tab
+    // Push the home screen to stack for proper back navigation
     router.push("/(tabs)");
   };
 
@@ -135,12 +154,13 @@ export default function CollectionsScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
-      <TouchableOpacity style={styles.header}>
+      <TouchableOpacity style={styles.header} onPress={scrollToTop}>
         <Text style={styles.title}>collections</Text>
       </TouchableOpacity>
 
       {/* Collections List */}
       <FlatList
+        ref={flatListRef}
         data={filteredCollections}
         renderItem={renderCollectionSection}
         keyExtractor={(collection) => collection.id}

@@ -11,6 +11,7 @@ import { BrandColors } from "@/constants/Colors";
 import { useAuthStore } from "@/store/authStore";
 import { Fonts } from "@/constants/Fonts";
 import { scrollHomeToTop } from "./index";
+import { scrollCollectionsToTop } from "./collections";
 
 export default function TabLayout() {
   const { user } = useAuthStore();
@@ -155,6 +156,12 @@ export default function TabLayout() {
               Collections
             </Text>
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            // Scroll to top when tab is pressed
+            scrollCollectionsToTop();
+          },
         }}
       />
       <Tabs.Screen

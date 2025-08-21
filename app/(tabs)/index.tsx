@@ -50,25 +50,30 @@ export default function HomeScreen() {
     (homeScrollRef as any).current = flatListRef.current;
   }, []);
 
-  const filters = [
-    { name: "All", count: dummyOutfits.length },
-    {
-      name: "Party",
-      count: dummyCollections.find((c) => c.name === "Party")
-        ? dummyOutfits.filter((o) =>
-            o.collections?.some((c) => c.name === "Party")
-          ).length
-        : 21,
-    },
-    {
-      name: "Work/Office",
-      count: dummyCollections.find((c) => c.name === "Work/Office")
-        ? dummyOutfits.filter((o) =>
-            o.collections?.some((c) => c.name === "Work/Office")
-          ).length
-        : 14,
-    },
-  ];
+  // Create filters with selected collection first
+  const createFilters = () => {
+    const allFilter = { name: "All", count: dummyOutfits.length };
+    const collectionFilters = dummyCollections.map(c => ({
+      name: c.name,
+      count: dummyOutfits.filter((o) =>
+        o.collections?.some((col) => col.name === c.name)
+      ).length,
+    }));
+
+    // If a specific collection is selected and it's not "All", put it first
+    if (selectedFilter !== "All") {
+      const selectedCollectionFilter = collectionFilters.find(f => f.name === selectedFilter);
+      if (selectedCollectionFilter) {
+        const otherFilters = collectionFilters.filter(f => f.name !== selectedFilter);
+        return [selectedCollectionFilter, allFilter, ...otherFilters];
+      }
+    }
+
+    // Default order: All first, then collections
+    return [allFilter, ...collectionFilters];
+  };
+
+  const filters = createFilters();
 
   const filteredOutfits =
     selectedFilter === "All"
