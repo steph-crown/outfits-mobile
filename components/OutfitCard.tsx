@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   },
   sourceLabel: {
     position: "absolute",
-    top: 8,
-    right: 8,
+    top: 12,
+    right: 12,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   collectionIndicator: {
     position: "absolute",
-    bottom: 8,
-    left: 8,
+    bottom: 12,
+    left: 12,
     // backgroundColor: "rgba(0, 0, 0, 0.7)",
     // padding: 6,
     // borderRadius: 6,

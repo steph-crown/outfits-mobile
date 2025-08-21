@@ -16,10 +16,29 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
+// Global ref for scroll to top functionality from tab bar
+export const homeScrollRef = React.createRef<FlatList>();
+
+// Global function to scroll home screen to top
+export const scrollHomeToTop = () => {
+  homeScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
+};
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [selectedFilter, setSelectedFilter] = React.useState("All");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const flatListRef = React.useRef<FlatList>(null);
+
+  const scrollToTop = () => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+    homeScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
+
+  // Set the global ref to this component's ref
+  React.useEffect(() => {
+    (homeScrollRef as any).current = flatListRef.current;
+  }, []);
 
   const filters = [
     { name: "All", count: dummyOutfits.length },
@@ -77,13 +96,8 @@ export default function HomeScreen() {
     );
   };
 
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>outfits</Text>
-      </View>
-
+  const renderHeader = () => (
+    <>
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <InputField
@@ -140,12 +154,23 @@ export default function HomeScreen() {
           {/* <Text style={[styles.filterText]}>+</Text> */}
         </TouchableOpacity>
       </ScrollView>
+    </>
+  );
 
-      {/* Outfits Grid */}
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
+      <TouchableOpacity style={styles.header} onPress={scrollToTop}>
+        <Text style={styles.title}>outfits</Text>
+      </TouchableOpacity>
+
+      {/* Outfits Grid with Header */}
       <FlatList
+        ref={flatListRef}
         data={filteredOutfits}
         renderItem={renderOutfitPair}
         keyExtractor={(item, index) => `pair-${index}`}
+        ListHeaderComponent={renderHeader}
         contentContainerStyle={[
           styles.outfitsContainer,
           { paddingBottom: insets.bottom + 10 },
@@ -172,7 +197,7 @@ const styles = StyleSheet.create({
     color: BrandColors.primary,
   },
   searchContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 0,
     marginBottom: 16,
   },
   searchInput: {
@@ -182,14 +207,15 @@ const styles = StyleSheet.create({
     color: BrandColors.primaryBlack,
   },
   filtersContainer: {
-    marginBottom: 4,
+    marginBottom: 0,
     // backgroundColor: "yellow",
     // height: "auto",
   },
   filtersContent: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 0,
     gap: 12,
-    height: 58,
+    marginBottom: 16,
+    // height: 58,
     // backgroundColor: "blue",
   },
   filterPill: {
