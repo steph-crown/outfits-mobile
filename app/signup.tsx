@@ -1,44 +1,41 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Dimensions,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { LockIcon, MailIcon } from "@/components/icons";
+import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { Button, InputField, toast } from "@/components/ui";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
-import { Button, InputField } from "@/components/ui";
-import { MailIcon, PersonIcon, LockIcon } from "@/components/icons";
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
+import { useAuthStore } from "@/store/authStore";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
 interface SignUpForm {
   email: string;
-  fullName: string;
   password: string;
 }
 
 interface FormErrors {
   email?: string;
-  fullName?: string;
   password?: string;
 }
 
 export default function SignUpScreen() {
   const insets = useSafeAreaInsets();
+  const { register, isLoading, error, clearError } = useAuthStore();
   const [form, setForm] = useState<SignUpForm>({
     email: "",
-    fullName: "",
     password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -47,12 +44,6 @@ export default function SignUpScreen() {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = "Please enter a valid email";
-    }
-
-    if (!form.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    } else if (form.fullName.trim().length < 2) {
-      newErrors.fullName = "Name must be at least 2 characters";
     }
 
     if (!form.password) {
@@ -81,18 +72,22 @@ export default function SignUpScreen() {
   const handleCreateAccount = async () => {
     if (!validateForm()) return;
 
-    setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Account created:", form);
+      clearError();
+      await register({
+        email: form.email,
+        password: form.password,
+      });
 
-      // Navigate to main app
-      router.replace("/(tabs)");
-    } catch (error) {
-      console.error("Error creating account:", error);
-    } finally {
-      setIsLoading(false);
+      // Show success toast and navigate to dashboard
+      toast.success("Account created successfully! Welcome to OutFits 🎉");
+      router.replace("/dashboard");
+    } catch (err) {
+      void err;
+      // console.error("Error creating account:", err);
+      // The error message is set in the auth store, use that for the toast
+      const errorMessage = error || "Registration failed. Please try again.";
+      toast.error(errorMessage);
     }
   };
 
@@ -175,16 +170,6 @@ export default function SignUpScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
-              error={errors.email}
-            />
-
-            <InputField
-              label="Full name"
-              value={form.fullName}
-              onChangeText={(value) => handleInputChange("fullName", value)}
-              icon={<PersonIcon />}
-              autoCapitalize="words"
-              error={errors.fullName}
             />
 
             <InputField
@@ -195,7 +180,6 @@ export default function SignUpScreen() {
               isPassword
               autoCapitalize="none"
               autoCorrect={false}
-              error={errors.password}
             />
           </View>
 
@@ -271,6 +255,19 @@ const styles = StyleSheet.create({
     ...FontStyles.bodyMedium,
     color: BrandColors.black3,
     fontSize: 16,
+  },
+  errorContainer: {
+    backgroundColor: "#FEF2F2",
+    borderColor: "#FCA5A5",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  errorText: {
+    ...FontStyles.body,
+    color: "#DC2626",
+    fontSize: 14,
   },
   googleButton: {
     marginBottom: 24,

@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -5,8 +6,16 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "react-native-reanimated";
+import { Toaster } from 'sonner-native';
+import { LogBox } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { SplashScreen } from "@/components/SplashScreen";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { BrandColors } from "@/constants/Colors";
+
+// Disable LogBox warnings and error overlays
+LogBox.ignoreAllLogs();
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
@@ -36,17 +45,31 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="signup" options={{ headerShown: false }} />
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="dark" />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
+        <SafeAreaProvider>
+          <ThemeProvider value={DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              <Stack.Screen name="signup" options={{ headerShown: false }} />
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen name="dashboard" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="dark" />
+            <Toaster
+              position="top-center"
+              theme="light"
+              richColors
+              closeButton
+              style={{
+                backgroundColor: BrandColors.white,
+              }}
+            />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </ErrorBoundary>
+    </GestureHandlerRootView>
   );
 }
