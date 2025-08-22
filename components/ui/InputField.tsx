@@ -10,6 +10,7 @@ import {
   ViewStyle,
   StyleProp,
 } from "react-native";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
 
@@ -18,6 +19,7 @@ interface InputFieldProps extends TextInputProps {
   icon?: React.ReactNode;
   error?: string;
   isPassword?: boolean;
+  isBottomSheet?: boolean;
   wrapperStyle?: StyleProp<ViewStyle>;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -28,6 +30,7 @@ export function InputField({
   icon,
   error,
   isPassword = false,
+  isBottomSheet = false,
   onFocus,
   onBlur,
   value,
@@ -109,16 +112,29 @@ export function InputField({
 
         <Animated.Text style={labelStyle}>{label}</Animated.Text>
 
-        <TextInput
-          style={[styles.textInput, { paddingLeft: icon ? 56 : 24 }]}
-          value={value}
-          onChangeText={onChangeText}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          secureTextEntry={isPassword && !isPasswordVisible}
-          placeholderTextColor={BrandColors.black3}
-          {...props}
-        />
+        {isBottomSheet ? (
+          <BottomSheetTextInput
+            style={[styles.textInput, { paddingLeft: icon ? 56 : 24 }]}
+            value={value}
+            onChangeText={onChangeText}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            secureTextEntry={isPassword && !isPasswordVisible}
+            placeholderTextColor={BrandColors.black3}
+            {...props}
+          />
+        ) : (
+          <TextInput
+            style={[styles.textInput, { paddingLeft: icon ? 56 : 24 }]}
+            value={value}
+            onChangeText={onChangeText}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            secureTextEntry={isPassword && !isPasswordVisible}
+            placeholderTextColor={BrandColors.black3}
+            {...props}
+          />
+        )}
 
         {isPassword && (
           <TouchableOpacity

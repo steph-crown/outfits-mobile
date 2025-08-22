@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import {
   Outfit,
 } from "@/types/outfit";
 import { useFilterStore } from "@/store/filterStore";
+import { useCollections } from "@/contexts/CollectionsContext";
 import Svg, { Path } from "react-native-svg";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -36,9 +37,10 @@ export const scrollCollectionsToTop = () => {
 
 export default function CollectionsScreen() {
   const insets = useSafeAreaInsets();
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const { setSelectedFilter } = useFilterStore();
-  const flatListRef = React.useRef<FlatList>(null);
+  const { openCreateCollection } = useCollections();
+  const flatListRef = useRef<FlatList>(null);
 
   const scrollToTop = () => {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
@@ -137,7 +139,7 @@ export default function CollectionsScreen() {
       </View>
 
       {/* Add Collection Button */}
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity style={styles.addButton} onPress={openCreateCollection}>
         <Svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <Path
             d="M10 4.16669V15.8334M4.16666 10H15.8333"

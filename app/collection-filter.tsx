@@ -4,10 +4,8 @@ import { InputField } from "@/components/ui";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { dummyCollections, dummyOutfits } from "@/types/outfit";
-import { useLocalSearchParams } from "expo-router";
-import { useFilterStore } from "@/store/filterStore";
-import { useCollections } from "@/contexts/CollectionsContext";
-import React, { useRef, useState } from "react";
+import { useLocalSearchParams, router } from "expo-router";
+import React from "react";
 import {
   FlatList,
   ScrollView,
@@ -19,63 +17,37 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
-// Global ref for scroll to top functionality from tab bar
-export const homeScrollRef = React.createRef<FlatList>();
-
-// Global function to scroll home screen to top
-export const scrollHomeToTop = () => {
-  homeScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
-};
-
-export default function HomeScreen() {
+export default function CollectionFilterScreen() {
   const params = useLocalSearchParams();
-  const { selectedFilter, setSelectedFilter } = useFilterStore();
-  const { openCreateCollection } = useCollections();
   const insets = useSafeAreaInsets();
-  const [searchQuery, setSearchQuery] = useState("");
-  const flatListRef = useRef<FlatList>(null);
-
-  // Handle collection filter from navigation
-  React.useEffect(() => {
-    if (params.filter && typeof params.filter === "string") {
-      setSelectedFilter(params.filter);
-    }
-  }, [params.filter, setSelectedFilter]);
+  const collectionName = params.collection as string;
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const flatListRef = React.useRef<FlatList>(null);
 
   const scrollToTop = () => {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
-    homeScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
-  // Set the global ref to this component's ref
-  React.useEffect(() => {
-    (homeScrollRef as any).current = flatListRef.current;
-  }, []);
-
-  // Create filters with selected collection first
-  const createFilters = () => {
-    const allFilter = { name: "All", count: dummyOutfits.length };
-    const collectionFilters = dummyCollections.map(c => ({
-      name: c.name,
+  // Create filters with the selected collection first
+  const filters = [
+    {
+      name: collectionName,
       count: dummyOutfits.filter((o) =>
-        o.collections?.some((col) => col.name === c.name)
+        o.collections?.some((c) => c.name === collectionName)
       ).length,
-    }));
+    },
+    { name: "All", count: dummyOutfits.length },
+    ...dummyCollections
+      .filter((c) => c.name !== collectionName)
+      .map((c) => ({
+        name: c.name,
+        count: dummyOutfits.filter((o) =>
+          o.collections?.some((col) => col.name === c.name)
+        ).length,
+      })),
+  ];
 
-    // If a specific collection is selected and it's not "All", put it first
-    if (selectedFilter !== "All") {
-      const selectedCollectionFilter = collectionFilters.find(f => f.name === selectedFilter);
-      if (selectedCollectionFilter) {
-        const otherFilters = collectionFilters.filter(f => f.name !== selectedFilter);
-        return [selectedCollectionFilter, allFilter, ...otherFilters];
-      }
-    }
-
-    // Default order: All first, then collections
-    return [allFilter, ...collectionFilters];
-  };
-
-  const filters = createFilters();
+  const [selectedFilter, setSelectedFilter] = React.useState(collectionName);
 
   const filteredOutfits =
     selectedFilter === "All"
@@ -88,7 +60,7 @@ export default function HomeScreen() {
 
   const renderOutfitPair = ({ item, index }: { item: any; index: number }) => {
     const isOdd = index % 2 === 1;
-    if (isOdd) return null; // Skip odd indices as they're handled by even indices
+    if (isOdd) return null;
 
     const leftOutfit = filteredOutfits[index];
     const rightOutfit = filteredOutfits[index + 1];
@@ -157,7 +129,9 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={[styles.filterPill]}
-          onPress={openCreateCollection}
+          onPress={() => {
+            return;
+          }}
         >
           <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <Path
@@ -165,8 +139,6 @@ export default function HomeScreen() {
               fill="#828282"
             />
           </Svg>
-
-          {/* <Text style={[styles.filterText]}>+</Text> */}
         </TouchableOpacity>
       </ScrollView>
     </>
@@ -174,10 +146,27 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <TouchableOpacity style={styles.header} onPress={scrollToTop}>
-        <Text style={styles.title}>outfits</Text>
-      </TouchableOpacity>
+      {/* Header with Back Button */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <Path
+              d="M15 18L9 12L15 6"
+              stroke={BrandColors.primaryBlack}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={scrollToTop} style={styles.titleContainer}>
+          <Text style={styles.title}>outfits</Text>
+        </TouchableOpacity>
+        <View style={styles.placeholder} />
+      </View>
 
       {/* Outfits Grid with Header */}
       <FlatList
@@ -204,6 +193,18 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 12,
     paddingBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleContainer: {
+    flex: 1,
     alignItems: "center",
   },
   title: {
@@ -211,31 +212,22 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.Hellix.Bold,
     color: BrandColors.primary,
   },
-  searchContainer: {
-    paddingHorizontal: 0,
-    marginBottom: 16,
+  placeholder: {
+    width: 40,
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: "Mona-Sans-Regular",
-    color: BrandColors.primaryBlack,
+  searchContainer: {
+    paddingHorizontal: 12,
+    marginBottom: 16,
   },
   filtersContainer: {
-    marginBottom: 0,
-    // backgroundColor: "yellow",
-    // height: "auto",
+    marginBottom: 4,
   },
   filtersContent: {
-    paddingHorizontal: 0,
+    paddingHorizontal: 12,
     gap: 12,
-    marginBottom: 16,
-    // height: 58,
-    // backgroundColor: "blue",
+    height: 58,
   },
   filterPill: {
-    // backgroundColor: BrandColors.white,
-
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -247,16 +239,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeFilterPill: {
-    // backgroundColor: BrandColors.primary,
     backgroundColor: BrandColors.primaryLighter,
-    // borderColor: BrandColors.primary,
     borderColor: "#E8E0E2",
   },
   filterText: {
     fontSize: 12,
     fontFamily: Fonts.MonaSans.SemiBold,
     color: BrandColors.black2,
-    // backgroundColor: "yellow",
     lineHeight: 14,
   },
   activeFilterText: {
@@ -269,10 +258,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginBottom: 0,
-    // backgroundColor: "red",
   },
   outfitColumn: {
     flex: 1,
-    // backgroundColor: "yellow",
   },
 });

@@ -1,17 +1,16 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ImageSourcePropType,
-  Pressable,
-} from "react-native";
-import { Outfit } from "@/types/outfit";
 import { FolderIcon } from "@/components/icons/TabIcons";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
+import { Outfit } from "@/types/outfit";
+import React from "react";
+import {
+  Image,
+  ImageSourcePropType,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 interface OutfitCardProps {
   outfit: Outfit;
