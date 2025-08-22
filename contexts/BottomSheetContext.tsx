@@ -4,6 +4,7 @@ import React, {
   useRef,
   ReactNode,
   useState,
+  useEffect,
 } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomBottomSheet } from "@/components/ui/BottomSheet";
@@ -36,8 +37,17 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
   const openBottomSheet = (newConfig: BottomSheetConfig) => {
     setConfig(newConfig);
     setIsOpen(true);
-    bottomSheetRef.current?.expand();
   };
+
+  // Use useEffect to expand after the component is rendered
+  useEffect(() => {
+    if (isOpen && config) {
+      const timer = setTimeout(() => {
+        bottomSheetRef.current?.expand();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, config]);
 
   const closeBottomSheet = () => {
     bottomSheetRef.current?.close();
