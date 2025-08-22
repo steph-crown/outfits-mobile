@@ -42,6 +42,8 @@ export function InputField({
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(!isPassword);
   const animatedIsFocused = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const textInputRef = useRef<TextInput>(null);
+  const bottomSheetInputRef = useRef<any>(null);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -110,10 +112,23 @@ export function InputField({
       <View style={containerStyle}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
 
-        <Animated.Text style={labelStyle}>{label}</Animated.Text>
+        <TouchableOpacity
+          style={styles.labelContainer}
+          onPress={() => {
+            if (isBottomSheet) {
+              bottomSheetInputRef.current?.focus();
+            } else {
+              textInputRef.current?.focus();
+            }
+          }}
+          activeOpacity={1}
+        >
+          <Animated.Text style={labelStyle}>{label}</Animated.Text>
+        </TouchableOpacity>
 
         {isBottomSheet ? (
           <BottomSheetTextInput
+            ref={bottomSheetInputRef}
             style={[styles.textInput, { paddingLeft: icon ? 56 : 24 }]}
             value={value}
             onChangeText={onChangeText}
@@ -125,6 +140,7 @@ export function InputField({
           />
         ) : (
           <TextInput
+            ref={textInputRef}
             style={[styles.textInput, { paddingLeft: icon ? 56 : 24 }]}
             value={value}
             onChangeText={onChangeText}
@@ -160,7 +176,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: BrandColors.white,
     borderRadius: 10000,
     height: 54,
     position: "relative",
@@ -170,6 +185,15 @@ const styles = StyleSheet.create({
     left: 24,
     zIndex: 2,
   },
+  labelContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    zIndex: 1,
+  },
   textInput: {
     flex: 1,
     // paddingTop: 20,
@@ -178,7 +202,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: BrandColors.primaryBlack,
     fontFamily: Fonts.MonaSans.Medium,
-    // backgroundColor: "red",
+    height: "100%",
+    lineHeight: 18,
   },
   passwordToggle: {
     position: "absolute",
