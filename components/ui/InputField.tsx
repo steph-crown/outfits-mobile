@@ -113,7 +113,10 @@ export function InputField({
         {icon && <View style={styles.iconContainer}>{icon}</View>}
 
         <TouchableOpacity
-          style={styles.labelContainer}
+          style={[
+            styles.labelContainer,
+            isPassword && { right: 80 }, // Don't overlap password toggle
+          ]}
           onPress={() => {
             if (isBottomSheet) {
               bottomSheetInputRef.current?.focus();
@@ -155,7 +158,10 @@ export function InputField({
         {isPassword && (
           <TouchableOpacity
             style={styles.passwordToggle}
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            onPress={(ev) => {
+              console.log("pressed me!");
+              setIsPasswordVisible(!isPasswordVisible);
+            }}
           >
             <Text style={styles.passwordToggleText}>
               {isPasswordVisible ? "Hide" : "Show"}
@@ -210,6 +216,7 @@ const styles = StyleSheet.create({
     right: 24,
     paddingVertical: 4,
     paddingHorizontal: 8,
+    zIndex: 3, // Higher than labelContainer
   },
   passwordToggleText: {
     ...FontStyles.caption,

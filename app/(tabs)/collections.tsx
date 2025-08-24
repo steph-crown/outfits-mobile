@@ -27,10 +27,8 @@ import Svg, { Path } from "react-native-svg";
 const { width: screenWidth } = Dimensions.get("window");
 const OUTFIT_CARD_WIDTH = (screenWidth - 48) / 2.3; // Show about 2.3 cards
 
-// Global ref for scroll to top functionality from tab bar
 export const collectionsScrollRef = React.createRef<FlatList>();
 
-// Global function to scroll collections screen to top
 export const scrollCollectionsToTop = () => {
   collectionsScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
 };
@@ -47,28 +45,22 @@ export default function CollectionsScreen() {
     collectionsScrollRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
-  // Set the global ref to this component's ref
   React.useEffect(() => {
     (collectionsScrollRef as any).current = flatListRef.current;
   }, []);
 
-  // Filter collections based on search
   const filteredCollections = dummyCollections.filter((collection) =>
     collection.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Get outfits for a specific collection
   const getOutfitsForCollection = (collectionId: string): Outfit[] => {
     return dummyOutfits.filter((outfit) =>
       outfit.collections?.some((col) => col.id === collectionId)
     );
   };
 
-  // Navigate to home screen with collection filter using stack navigation
   const navigateToCollection = (collectionName: string) => {
-    // Set the filter in global state
     setSelectedFilter(collectionName);
-    // Push the home screen to stack for proper back navigation
     router.push("/(tabs)");
   };
 
@@ -110,7 +102,6 @@ export default function CollectionsScreen() {
           </Svg>
         </TouchableOpacity>
 
-        {/* Horizontal Outfits List */}
         <FlatList
           data={outfits}
           renderItem={renderOutfitItem}
