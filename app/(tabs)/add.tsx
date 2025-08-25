@@ -1,24 +1,21 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BrandColors } from '@/constants/Colors';
-import { UploadBottomSheet } from '@/components/UploadBottomSheet';
+import { router } from 'expo-router';
 
 export default function AddScreen() {
   const insets = useSafeAreaInsets();
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-  // Open the bottom sheet when this screen is focused
+  // This screen should not be reached since we prevent navigation in the tab listener
+  // But if it somehow gets reached, redirect back
   useEffect(() => {
-    bottomSheetRef.current?.present();
+    router.back();
   }, []);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <UploadBottomSheet 
-        bottomSheetRef={bottomSheetRef}
-      />
+      {/* Empty placeholder - this screen should not be visible */}
     </View>
   );
 }

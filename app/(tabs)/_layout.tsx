@@ -12,11 +12,17 @@ import { useAuthStore } from "@/store/authStore";
 import { Fonts } from "@/constants/Fonts";
 import { scrollHomeToTop } from "./index";
 import { scrollCollectionsToTop } from "./collections";
-import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
+import {
+  BottomSheetProvider,
+  useBottomSheet,
+} from "@/contexts/BottomSheetContext";
 import { CollectionsProvider } from "@/contexts/CollectionsContext";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { UploadContent } from "../../components/UploadContent";
 
-export default function TabLayout() {
+// Component that handles the tab navigation with bottom sheet integration
+function TabsContent() {
+  const { openBottomSheet } = useBottomSheet();
   const { user } = useAuthStore();
 
   // Get user's initials for profile tab
@@ -52,22 +58,26 @@ export default function TabLayout() {
     </View>
   );
 
+  const handleAddPress = () => {
+    openBottomSheet({
+      title: "Add Outfit",
+      content: <UploadContent />,
+    });
+  };
+
   return (
-    <BottomSheetModalProvider>
-      <BottomSheetProvider>
-        <CollectionsProvider>
-          <Tabs
-            screenOptions={{
-              headerShown: false,
-              tabBarStyle: styles.tabBar,
-              tabBarShowLabel: true,
-              tabBarItemStyle: styles.tabBarItem,
-              tabBarLabelStyle: styles.tabBarLabel,
-              tabBarIconStyle: styles.tabBarIcon,
-              tabBarActiveTintColor: BrandColors.primaryBlack,
-              tabBarInactiveTintColor: BrandColors.black2,
-            }}
-          >
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: styles.tabBar,
+        tabBarShowLabel: true,
+        tabBarItemStyle: styles.tabBarItem,
+        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarIconStyle: styles.tabBarIcon,
+        tabBarActiveTintColor: BrandColors.primaryBlack,
+        tabBarInactiveTintColor: BrandColors.black2,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -137,6 +147,14 @@ export default function TabLayout() {
           ),
           tabBarLabel: () => null,
         }}
+        listeners={{
+          tabPress: (e) => {
+            // Prevent default navigation
+            e.preventDefault();
+            // Open bottom sheet instead
+            handleAddPress();
+          },
+        }}
       />
       <Tabs.Screen
         name="collections"
@@ -194,9 +212,18 @@ export default function TabLayout() {
           ),
         }}
       />
-      </Tabs>
-      </CollectionsProvider>
-    </BottomSheetProvider>
+    </Tabs>
+  );
+}
+
+export default function TabLayout() {
+  return (
+    <BottomSheetModalProvider>
+      <BottomSheetProvider>
+        <CollectionsProvider>
+          <TabsContent />
+        </CollectionsProvider>
+      </BottomSheetProvider>
     </BottomSheetModalProvider>
   );
 }
