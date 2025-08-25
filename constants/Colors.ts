@@ -10,6 +10,7 @@ export const BrandColors = {
   white: "#FFFFFF",
   primaryWhite: "#F7FAFC",
   primaryLighter: "#FDE2EA",
+  black5: "#f2f2f2",
   black4: "#D9D8DB",
   black3: "#A0AEC0",
   black2: "#828282",

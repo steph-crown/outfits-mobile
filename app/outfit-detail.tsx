@@ -13,7 +13,7 @@ import {
   Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { BrandColors } from "@/constants/Colors";
+import { BrandColors, Colors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
 import { BackArrowIcon } from "@/components/icons/BackArrowIcon";
 import { EllipsisIcon } from "@/components/icons/EllipsisIcon";
@@ -25,10 +25,13 @@ import { PinterestIcon } from "@/components/icons/PinterestIcon";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
 import { FacebookIcon } from "@/components/icons/FacebookIcon";
 import { dummyOutfits, Outfit } from "@/types/outfit";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FolderIcon } from "@/components/icons/TabIcons";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function OutfitDetailScreen() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const params = useLocalSearchParams();
   const [showShareModal, setShowShareModal] = useState(false);
@@ -67,8 +70,8 @@ export default function OutfitDetailScreen() {
 
   // Create description from AI tags and user tags
   const allTags = [...outfit.ai_tags, ...outfit.user_tags];
-  const description =
-    outfit.original_text || `Featuring ${allTags.slice(0, 3).join(", ")} style`;
+  // const description =
+  //   outfit.original_text || `Featuring ${allTags.slice(0, 3).join(", ")} style`;
 
   const handleBack = () => {
     router.back();
@@ -82,7 +85,7 @@ export default function OutfitDetailScreen() {
           : ""; // Can't share local images via URL
 
       await Share.share({
-        message: `Check out this outfit: ${description}`,
+        message: `Check out this outfit: ${outfit.note}`,
         url: shareUrl,
       });
     } catch {
@@ -192,15 +195,24 @@ export default function OutfitDetailScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={[styles.header, { top: insets.top }]}>
         <TouchableOpacity style={styles.headerButton} onPress={handleBack}>
           <BackArrowIcon />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.headerButton} onPress={handleShare}>
-          <EllipsisIcon />
-        </TouchableOpacity>
+
+        <View style={styles.rightBtns}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => setShowShareModal(true)}
+          >
+            <ShareIcon />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.headerButton} onPress={handleShare}>
+            <EllipsisIcon />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -212,28 +224,30 @@ export default function OutfitDetailScreen() {
             style={styles.outfitImage}
             resizeMode="cover"
           />
-
-          {/* Share Button Overlay */}
-          <TouchableOpacity
-            style={styles.shareButton}
-            onPress={() => setShowShareModal(true)}
-          >
-            <ShareIcon />
-          </TouchableOpacity>
-
-          {/* View on Platform Button */}
-          <TouchableOpacity
-            style={styles.viewOnPlatformButton}
-            onPress={() => handleViewOnPlatform("TikTok")}
-          >
-            <TikTokIcon width={17} height={20} fill="#FFFFFF" />
-            <Text style={styles.viewOnPlatformText}>View on TikTok</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Outfit Details */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.outfitTitle}>{description}</Text>
+          <View style={styles.ctas}>
+            <TouchableOpacity
+              style={styles.collectionBtn}
+              onPress={() => handleViewOnPlatform("TikTok")}
+            >
+              {/* <TikTokIcon width={17} height={20} fill="#FFFFFF" /> */}
+              <FolderIcon color="#050413" />
+              <Text style={styles.collectionText}>Brunch</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.viewOnPlatformButton}
+              onPress={() => handleViewOnPlatform("TikTok")}
+            >
+              <TikTokIcon width={17} height={20} fill="#FFFFFF" />
+              <Text style={styles.viewOnPlatformText}>View on TikTok</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.outfitTitle}>{outfit.note}</Text>
 
           <View style={styles.tagsContainer}>
             {allTags.slice(0, 5).map((tag, index) => (
@@ -254,15 +268,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: BrandColors.white,
+    paddingHorizontal: 8,
+    position: "relative",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingVertical: 16,
     position: "absolute",
-    top: 0,
+    // top: 0,
     left: 0,
     right: 0,
     zIndex: 10,
@@ -270,10 +286,11 @@ const styles = StyleSheet.create({
   headerButton: {
     width: 40,
     height: 40,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.6 )",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    display: "flex",
   },
   content: {
     flex: 1,
@@ -281,67 +298,85 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: "relative",
     width: screenWidth,
-    height: screenWidth * 1.5, // Aspect ratio similar to the image
+    height: screenWidth * 1.65, // Aspect ratio similar to the image
   },
   outfitImage: {
     width: "100%",
     height: "100%",
     backgroundColor: BrandColors.black4, // Placeholder while loading
+    borderRadius: 28,
   },
-  shareButton: {
-    position: "absolute",
-    top: 20,
-    right: 80, // Positioned between the image and the ellipsis button
-    width: 40,
-    height: 40,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+  rightBtns: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 16,
   },
+  // shareButton: {
+  //   width: 40,
+  //   height: 40,
+  //   backgroundColor: "rgba(0, 0, 0, 0.5)",
+  //   borderRadius: 20,
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  // },
   viewOnPlatformButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FF0050", // TikTok brand color
+    backgroundColor: Colors.primary, // TikTok brand color
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 25,
+    borderRadius: 100,
+    gap: 8,
+  },
+  collectionBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: BrandColors.black5, // TikTok brand color
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 100,
+    gap: 8,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: BrandColors.black4,
+  },
+  collectionText: {
+    color: BrandColors.primaryBlack,
+    fontFamily: Fonts.MonaSans.SemiBold,
+    fontSize: 14,
   },
   viewOnPlatformText: {
     color: BrandColors.white,
     fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 16,
-    marginLeft: 8,
+    fontSize: 14,
   },
   detailsContainer: {
-    padding: 20,
+    paddingVertical: 16,
   },
   outfitTitle: {
     ...FontStyles.heading3,
     fontFamily: Fonts.MonaSans.Bold,
     color: BrandColors.primaryBlack,
-    marginBottom: 16,
-    lineHeight: 28,
+    marginBottom: 8,
+    lineHeight: 20,
+    fontSize: 18,
   },
   tagsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    columnGap: 8,
   },
   tagContainer: {
-    backgroundColor: BrandColors.black4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    // backgroundColor: BrandColors.black4,
+    // paddingHorizontal: 12,
+    // paddingVertical: 6,
+    // borderRadius: 16,
   },
   tagText: {
     ...FontStyles.bodySmall,
-    fontFamily: Fonts.MonaSans.Medium,
+    fontFamily: Fonts.MonaSans.SemiBold,
     color: BrandColors.black2,
   },
   modalOverlay: {
@@ -407,5 +442,11 @@ const styles = StyleSheet.create({
     ...FontStyles.body,
     fontFamily: Fonts.MonaSans.Medium,
     color: BrandColors.primaryBlack,
+  },
+  ctas: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
   },
 });
