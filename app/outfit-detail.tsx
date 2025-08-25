@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   detailsContainer: {
-    paddingVertical: 16,
+    paddingVertical: 14,
   },
   outfitTitle: {
     ...FontStyles.heading3,
