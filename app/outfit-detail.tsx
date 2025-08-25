@@ -297,8 +297,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: "relative",
-    width: screenWidth,
-    height: screenWidth * 1.65, // Aspect ratio similar to the image
+    width: screenWidth - 16,
+    height: (screenWidth - 16) * 1.7, // Aspect ratio similar to the image
   },
   outfitImage: {
     width: "100%",

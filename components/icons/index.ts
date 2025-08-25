@@ -12,3 +12,5 @@ export { CameraIcon } from './CameraIcon';
 export { PinterestIcon } from './PinterestIcon';
 export { InstagramIcon } from './InstagramIcon';
 export { FacebookIcon } from './FacebookIcon';
+export { BrowserIcon } from './BrowserIcon';
+export { ArrowRightIcon } from './ArrowRightIcon';

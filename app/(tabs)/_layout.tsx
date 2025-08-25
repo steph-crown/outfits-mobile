@@ -14,6 +14,7 @@ import { scrollHomeToTop } from "./index";
 import { scrollCollectionsToTop } from "./collections";
 import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
 import { CollectionsProvider } from "@/contexts/CollectionsContext";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export default function TabLayout() {
   const { user } = useAuthStore();
@@ -52,20 +53,21 @@ export default function TabLayout() {
   );
 
   return (
-    <BottomSheetProvider>
-      <CollectionsProvider>
-        <Tabs
-          screenOptions={{
-            headerShown: false,
-            tabBarStyle: styles.tabBar,
-            tabBarShowLabel: true,
-            tabBarItemStyle: styles.tabBarItem,
-            tabBarLabelStyle: styles.tabBarLabel,
-            tabBarIconStyle: styles.tabBarIcon,
-            tabBarActiveTintColor: BrandColors.primaryBlack,
-            tabBarInactiveTintColor: BrandColors.black2,
-          }}
-        >
+    <BottomSheetModalProvider>
+      <BottomSheetProvider>
+        <CollectionsProvider>
+          <Tabs
+            screenOptions={{
+              headerShown: false,
+              tabBarStyle: styles.tabBar,
+              tabBarShowLabel: true,
+              tabBarItemStyle: styles.tabBarItem,
+              tabBarLabelStyle: styles.tabBarLabel,
+              tabBarIconStyle: styles.tabBarIcon,
+              tabBarActiveTintColor: BrandColors.primaryBlack,
+              tabBarInactiveTintColor: BrandColors.black2,
+            }}
+          >
       <Tabs.Screen
         name="index"
         options={{
@@ -195,6 +197,7 @@ export default function TabLayout() {
       </Tabs>
       </CollectionsProvider>
     </BottomSheetProvider>
+    </BottomSheetModalProvider>
   );
 }
 
