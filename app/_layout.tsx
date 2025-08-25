@@ -58,6 +58,11 @@ export default function RootLayout() {
               <Stack.Screen name="signup" options={{ headerShown: false }} />
               <Stack.Screen name="login" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="outfit-detail"
+                options={{ headerShown: false }}
+              />
+              1
               <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="dark" />

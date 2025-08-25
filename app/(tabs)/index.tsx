@@ -4,7 +4,7 @@ import { InputField } from "@/components/ui";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { dummyCollections, dummyOutfits } from "@/types/outfit";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useFilterStore } from "@/store/filterStore";
 import { useCollections } from "@/contexts/CollectionsContext";
 import React, { useRef, useState } from "react";
@@ -29,6 +29,7 @@ export const scrollHomeToTop = () => {
 
 export default function HomeScreen() {
   const params = useLocalSearchParams();
+  const router = useRouter();
   const { selectedFilter, setSelectedFilter } = useFilterStore();
   const { openCreateCollection } = useCollections();
   const insets = useSafeAreaInsets();
@@ -98,14 +99,14 @@ export default function HomeScreen() {
         <View style={styles.outfitColumn}>
           <OutfitCard
             outfit={leftOutfit}
-            onPress={() => console.log("Outfit pressed:", leftOutfit.id)}
+            onPress={() => router.push(`/outfit-detail?id=${leftOutfit.id}`)}
           />
         </View>
         {rightOutfit && (
           <View style={styles.outfitColumn}>
             <OutfitCard
               outfit={rightOutfit}
-              onPress={() => console.log("Outfit pressed:", rightOutfit.id)}
+              onPress={() => router.push(`/outfit-detail?id=${rightOutfit.id}`)}
             />
           </View>
         )}

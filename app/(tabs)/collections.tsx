@@ -68,7 +68,7 @@ export default function CollectionsScreen() {
     <View style={styles.outfitCardWrapper}>
       <OutfitCard
         outfit={item}
-        onPress={() => console.log("Outfit pressed:", item.id)}
+        onPress={() => router.push(`/outfit-detail?id=${item.id}`)}
       />
     </View>
   );
