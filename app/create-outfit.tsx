@@ -7,12 +7,13 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  TextInput,
 } from "react-native";
 import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
-import { BackArrowIcon, HashtagIcon } from "@/components/icons";
+import { BackArrowIcon, GalleryIcon, HashtagIcon } from "@/components/icons";
 import { FolderIcon } from "@/components/icons/TabIcons";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
 import { InputField } from "@/components/ui";
@@ -228,12 +229,16 @@ export default function CreateOutfitScreen() {
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <BackArrowIcon />
-        </TouchableOpacity>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <BackArrowIcon fill="#050413" />
+          </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>New outfit</Text>
+          <Text style={styles.headerTitle}>New outfit</Text>
+        </View>
+
         <TouchableOpacity style={styles.fromGalleryButton}>
+          <GalleryIcon height={20} width={20} />
           <Text style={styles.fromGalleryText}>From Gallery</Text>
         </TouchableOpacity>
       </View>
@@ -259,7 +264,7 @@ export default function CreateOutfitScreen() {
               console.log(`Using URI: ${properUri}`);
 
               return (
-                <View key={photo.id} style={{ marginRight: 12 }}>
+                <View key={photo.id}>
                   <Image
                     source={{ uri: properUri }}
                     style={styles.selectedPhoto}
@@ -272,11 +277,6 @@ export default function CreateOutfitScreen() {
                       console.log(`Image loaded successfully: ${properUri}`);
                     }}
                   />
-                  <Text
-                    style={{ marginTop: 8, fontSize: 12, textAlign: "center" }}
-                  >
-                    Photo {index + 1}
-                  </Text>
                 </View>
               );
             })}
@@ -285,13 +285,14 @@ export default function CreateOutfitScreen() {
 
         {/* Note Input */}
         <View style={styles.section}>
-          <InputField
-            label="Note"
+          <TextInput
+            // label="Note"
             placeholder="Add a note about these outfits..."
             value={note}
             onChangeText={setNote}
             multiline
             numberOfLines={3}
+            style={styles.noteInput}
           />
         </View>
 
@@ -369,14 +370,18 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: Fonts.MonaSans.Bold,
-    fontSize: 18,
+    fontSize: 16,
     color: BrandColors.primaryBlack,
   },
   fromGalleryButton: {
     backgroundColor: "#F3F4F6",
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingVertical: 8,
+    borderRadius: 100,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   fromGalleryText: {
     fontFamily: Fonts.MonaSans.SemiBold,
@@ -387,31 +392,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   photosScrollView: {
-    paddingVertical: 16,
+    // paddingTop: 16,
   },
   photosContainer: {
     paddingHorizontal: 16,
-    gap: 8,
+    gap: 12,
   },
   selectedPhoto: {
-    width: 200,
+    width: 280,
     height: 300,
-    borderRadius: 12,
     backgroundColor: "#f0f0f0", // Add background to see if image area is visible
-    marginRight: 12,
+    // marginRight: 4,
   },
   section: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
+    // marginBottom: 24,
+    // backgroundColor: "red",
   },
   noteInput: {
     borderWidth: 0,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: Fonts.MonaSans.Medium,
     color: BrandColors.primaryBlack,
-    minHeight: 80,
+    // minHeight: 80,
     textAlignVertical: "top",
-    paddingTop: 12,
+    paddingTop: 24,
+    paddingBottom: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    paddingHorizontal: 16,
+    lineHeight: 18,
   },
   optionRow: {
     flexDirection: "row",
@@ -421,6 +430,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
+    // backgroundColor: "red",
   },
   optionLeft: {
     flexDirection: "row",
@@ -429,13 +439,13 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 16,
+    fontSize: 14,
     color: BrandColors.primaryBlack,
     marginLeft: 12,
   },
   chevron: {
-    fontSize: 20,
-    color: BrandColors.black3,
+    fontSize: 24,
+    color: BrandColors.black2,
   },
   tagsDisplayContainer: {
     flexDirection: "row",
@@ -554,5 +564,10 @@ const styles = StyleSheet.create({
   tagRemoveText: {
     fontSize: 16,
     color: BrandColors.black3,
+  },
+  headerLeft: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

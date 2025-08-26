@@ -1,5 +1,5 @@
-import React from 'react';
-import { Svg, Path } from 'react-native-svg';
+import React from "react";
+import { Svg, Path } from "react-native-svg";
 
 interface BackArrowIconProps {
   width?: number;
@@ -7,10 +7,10 @@ interface BackArrowIconProps {
   fill?: string;
 }
 
-export function BackArrowIcon({ 
-  width = 24, 
-  height = 24, 
-  fill = "#F7FAFC" 
+export function BackArrowIcon({
+  width = 24,
+  height = 24,
+  fill = "#F7FAFC",
 }: BackArrowIconProps) {
   return (
     <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
