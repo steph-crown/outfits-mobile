@@ -40,7 +40,7 @@ const CollectionsContent = ({
   onSelectCollection: (collection: Collection) => void;
 }) => (
   <View style={styles.bottomSheetContent}>
-    <Text style={styles.bottomSheetTitle}>Select Collection</Text>
+    {/* <Text style={styles.bottomSheetTitle}>Select Collection</Text> */}
     {collections.map((collection) => (
       <TouchableOpacity
         key={collection.id}
@@ -92,7 +92,7 @@ const TagsContent = ({
 
   return (
     <View style={styles.bottomSheetContent}>
-      <Text style={styles.bottomSheetTitle}>Add Tags</Text>
+      {/* <Text style={styles.bottomSheetTitle}>Add Tags</Text> */}
 
       <View style={styles.tagInputContainer}>
         <InputField
@@ -178,7 +178,7 @@ export default function CreateOutfitScreen() {
 
   const handleSelectCollection = () => {
     openBottomSheet({
-      title: "Collections",
+      title: "Select collection",
       content: (
         <CollectionsContent
           collections={collections}
@@ -487,28 +487,23 @@ const styles = StyleSheet.create({
     color: BrandColors.white,
   },
   bottomSheetContent: {
-    padding: 16,
+    paddingBottom: 32,
   },
-  bottomSheetTitle: {
-    fontFamily: Fonts.MonaSans.Bold,
-    fontSize: 18,
-    color: BrandColors.primaryBlack,
-    marginBottom: 16,
-  },
+
   collectionOption: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 8,
+    borderRadius: 100,
+    marginBottom: 4,
   },
   selectedCollectionOption: {
     backgroundColor: BrandColors.primaryBlack,
   },
   collectionOptionText: {
     fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 16,
+    fontSize: 14,
     color: BrandColors.primaryBlack,
     marginLeft: 12,
   },
