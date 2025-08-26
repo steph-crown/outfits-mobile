@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   SafeAreaView,
   Image,
   Alert,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { BrandColors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
-import { BackArrowIcon, HashtagIcon } from '@/components/icons';
-import { FolderIcon } from '@/components/icons/TabIcons';
-import { useBottomSheet } from '@/contexts/BottomSheetContext';
+} from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { BrandColors } from "@/constants/Colors";
+import { Fonts } from "@/constants/Fonts";
+import { BackArrowIcon, HashtagIcon } from "@/components/icons";
+import { FolderIcon } from "@/components/icons/TabIcons";
+import { useBottomSheet } from "@/contexts/BottomSheetContext";
+import { InputField } from "@/components/ui";
+import { Button } from "@/components/ui/Button";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface SelectedPhoto {
   id: string;
@@ -27,10 +29,10 @@ interface Collection {
   name: string;
 }
 
-const CollectionsContent = ({ 
-  collections, 
-  selectedCollection, 
-  onSelectCollection 
+const CollectionsContent = ({
+  collections,
+  selectedCollection,
+  onSelectCollection,
 }: {
   collections: Collection[];
   selectedCollection: Collection | null;
@@ -43,15 +45,25 @@ const CollectionsContent = ({
         key={collection.id}
         style={[
           styles.collectionOption,
-          selectedCollection?.id === collection.id && styles.selectedCollectionOption
+          selectedCollection?.id === collection.id &&
+            styles.selectedCollectionOption,
         ]}
         onPress={() => onSelectCollection(collection)}
       >
-        <FolderIcon color={selectedCollection?.id === collection.id ? BrandColors.white : '#050413'} />
-        <Text style={[
-          styles.collectionOptionText,
-          selectedCollection?.id === collection.id && styles.selectedCollectionOptionText
-        ]}>
+        <FolderIcon
+          color={
+            selectedCollection?.id === collection.id
+              ? BrandColors.white
+              : "#050413"
+          }
+        />
+        <Text
+          style={[
+            styles.collectionOptionText,
+            selectedCollection?.id === collection.id &&
+              styles.selectedCollectionOptionText,
+          ]}
+        >
           {collection.name}
         </Text>
       </TouchableOpacity>
@@ -59,40 +71,49 @@ const CollectionsContent = ({
   </View>
 );
 
-const TagsContent = ({ 
-  tags, 
-  onAddTag, 
-  onRemoveTag 
+const TagsContent = ({
+  tags,
+  onAddTag,
+  onRemoveTag,
 }: {
   tags: string[];
   onAddTag: (tag: string) => void;
   onRemoveTag: (index: number) => void;
 }) => {
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState("");
 
   const handleAddTag = () => {
     if (newTag.trim()) {
       onAddTag(newTag.trim());
-      setNewTag('');
+      setNewTag("");
     }
   };
 
   return (
     <View style={styles.bottomSheetContent}>
       <Text style={styles.bottomSheetTitle}>Add Tags</Text>
-      
+
       <View style={styles.tagInputContainer}>
-        <TextInput
-          style={styles.tagInput}
+        <InputField
+          label="Tag"
           placeholder="Enter a tag..."
           value={newTag}
           onChangeText={setNewTag}
           onSubmitEditing={handleAddTag}
           returnKeyType="done"
+          isBottomSheet={true}
+          icon={<HashtagIcon width={20} height={20} fill="#A0AEC0" />}
         />
-        <TouchableOpacity style={styles.addTagButton} onPress={handleAddTag}>
-          <Text style={styles.addTagButtonText}>Add</Text>
-        </TouchableOpacity>
+      </View>
+
+      <View style={styles.tagButtonContainer}>
+        <Button
+          title="Add Tag"
+          onPress={handleAddTag}
+          variant="primary"
+          disabled={!newTag.trim()}
+          fullWidth
+        />
       </View>
 
       <View style={styles.tagsContainer}>
@@ -114,20 +135,22 @@ const TagsContent = ({
 export default function CreateOutfitScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
   const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-  
+
   const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
-  const [note, setNote] = useState('');
-  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+  const [note, setNote] = useState("");
+  const [selectedCollection, setSelectedCollection] =
+    useState<Collection | null>(null);
   const [tags, setTags] = useState<string[]>([]);
 
   // Mock collections data
   const collections: Collection[] = [
-    { id: '1', name: 'Brunch' },
-    { id: '2', name: 'Work' },
-    { id: '3', name: 'Date Night' },
-    { id: '4', name: 'Casual' },
-    { id: '5', name: 'Formal' },
+    { id: "1", name: "Brunch" },
+    { id: "2", name: "Work" },
+    { id: "3", name: "Date Night" },
+    { id: "4", name: "Casual" },
+    { id: "5", name: "Formal" },
   ];
 
   React.useEffect(() => {
@@ -136,7 +159,7 @@ export default function CreateOutfitScreen() {
         const photos = JSON.parse(params.selectedPhotos as string);
         setSelectedPhotos(photos);
       } catch (error) {
-        console.error('Error parsing selected photos:', error);
+        console.error("Error parsing selected photos:", error);
       }
     }
   }, [params.selectedPhotos]);
@@ -147,7 +170,7 @@ export default function CreateOutfitScreen() {
 
   const handleSelectCollection = () => {
     openBottomSheet({
-      title: 'Collections',
+      title: "Collections",
       content: (
         <CollectionsContent
           collections={collections}
@@ -163,7 +186,7 @@ export default function CreateOutfitScreen() {
 
   const handleAddTags = () => {
     openBottomSheet({
-      title: 'Tags',
+      title: "Tags",
       content: (
         <TagsContent
           tags={tags}
@@ -176,16 +199,24 @@ export default function CreateOutfitScreen() {
 
   const handleSaveOutfit = () => {
     if (selectedPhotos.length === 0) {
-      Alert.alert('No Photos', 'Please select at least one photo');
+      Alert.alert("No Photos", "Please select at least one photo");
       return;
     }
 
-    // Navigate to success screen
-    router.replace('/outfit-saved');
+    // Navigate to success screen with the outfit data
+    router.replace({
+      pathname: "/outfit-saved",
+      params: {
+        selectedPhotos: JSON.stringify(selectedPhotos),
+        note: note,
+        selectedCollection: selectedCollection?.name || "",
+        tags: JSON.stringify(tags),
+      },
+    });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -207,30 +238,38 @@ export default function CreateOutfitScreen() {
             contentContainerStyle={styles.photosContainer}
           >
             {selectedPhotos.map((photo, index) => (
-              <Image key={photo.id} source={{ uri: photo.uri }} style={styles.selectedPhoto} />
+              <Image
+                key={photo.id}
+                source={{ uri: photo.uri }}
+                style={styles.selectedPhoto}
+              />
             ))}
           </ScrollView>
         )}
 
         {/* Note Input */}
         <View style={styles.section}>
-          <TextInput
-            style={styles.noteInput}
+          <InputField
+            label="Note"
             placeholder="Add a note about these outfits..."
             value={note}
             onChangeText={setNote}
             multiline
             numberOfLines={3}
-            textAlignVertical="top"
           />
         </View>
 
         {/* Add to Collection */}
-        <TouchableOpacity style={styles.optionRow} onPress={handleSelectCollection}>
+        <TouchableOpacity
+          style={styles.optionRow}
+          onPress={handleSelectCollection}
+        >
           <View style={styles.optionLeft}>
             <FolderIcon color="#050413" />
             <Text style={styles.optionText}>
-              {selectedCollection ? selectedCollection.name : 'Add to collection'}
+              {selectedCollection
+                ? selectedCollection.name
+                : "Add to collection"}
             </Text>
           </View>
           <Text style={styles.chevron}>›</Text>
@@ -241,7 +280,7 @@ export default function CreateOutfitScreen() {
           <View style={styles.optionLeft}>
             <HashtagIcon width={24} height={24} />
             <Text style={styles.optionText}>
-              {tags.length > 0 ? `${tags.length} tags added` : 'Add tags'}
+              {tags.length > 0 ? `${tags.length} tags added` : "Add tags"}
             </Text>
           </View>
           <Text style={styles.chevron}>›</Text>
@@ -264,9 +303,12 @@ export default function CreateOutfitScreen() {
 
       {/* Save Button */}
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSaveOutfit}>
-          <Text style={styles.saveButtonText}>Save outfit</Text>
-        </TouchableOpacity>
+        <Button
+          title="Save outfit"
+          onPress={handleSaveOutfit}
+          variant="primary"
+          fullWidth
+        />
       </View>
     </SafeAreaView>
   );
@@ -278,13 +320,13 @@ const styles = StyleSheet.create({
     backgroundColor: BrandColors.white,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: "#E5E7EB",
   },
   backButton: {
     padding: 8,
@@ -295,7 +337,7 @@ const styles = StyleSheet.create({
     color: BrandColors.primaryBlack,
   },
   fromGalleryButton: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -330,21 +372,21 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.MonaSans.Medium,
     color: BrandColors.primaryBlack,
     minHeight: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     paddingTop: 12,
   },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: "#F3F4F6",
   },
   optionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   optionText: {
@@ -358,14 +400,14 @@ const styles = StyleSheet.create({
     color: BrandColors.black3,
   },
   tagsDisplayContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     paddingHorizontal: 16,
     paddingVertical: 8,
     gap: 8,
   },
   tagDisplay: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -379,7 +421,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.MonaSans.Medium,
     fontSize: 14,
     color: BrandColors.black3,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   bottomContainer: {
     padding: 16,
@@ -389,7 +431,7 @@ const styles = StyleSheet.create({
     backgroundColor: BrandColors.primaryBlack,
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
     fontFamily: Fonts.MonaSans.SemiBold,
@@ -406,8 +448,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   collectionOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -426,15 +468,15 @@ const styles = StyleSheet.create({
     color: BrandColors.white,
   },
   tagInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 16,
-    gap: 8,
+  },
+  tagButtonContainer: {
+    marginBottom: 16,
   },
   tagInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -453,14 +495,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   tagChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F3F4F6",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,

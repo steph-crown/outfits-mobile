@@ -44,7 +44,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     if (isOpen && config) {
       const timer = setTimeout(() => {
         bottomSheetRef.current?.expand();
-      }, 50);
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [isOpen, config]);

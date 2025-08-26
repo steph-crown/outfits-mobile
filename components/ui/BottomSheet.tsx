@@ -4,7 +4,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import React, { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 interface CustomBottomSheetProps {
@@ -17,8 +17,6 @@ export const CustomBottomSheet = forwardRef<
   BottomSheet,
   CustomBottomSheetProps
 >(({ title, children, onClose }, ref) => {
-  // Bottom sheet snap points
-
   // Backdrop component
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -36,7 +34,6 @@ export const CustomBottomSheet = forwardRef<
     <BottomSheet
       ref={ref}
       index={-1}
-      // snapPoints={snapPoints}
       enablePanDownToClose
       backdropComponent={renderBackdrop}
       onClose={onClose}

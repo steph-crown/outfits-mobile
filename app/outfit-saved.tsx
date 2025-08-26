@@ -3,19 +3,36 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   SafeAreaView,
+  Image,
+  ScrollView,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { FolderIcon } from "@/components/icons/TabIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Button } from "@/components/ui/Button";
+
+interface SelectedPhoto {
+  id: string;
+  uri: string;
+}
 
 export default function OutfitSavedScreen() {
   const insets = useSafeAreaInsets();
-
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  // Parse the received parameters
+  const selectedPhotos: SelectedPhoto[] = params.selectedPhotos 
+    ? JSON.parse(params.selectedPhotos as string) 
+    : [];
+  const note = params.note as string || '';
+  const selectedCollection = params.selectedCollection as string || 'Brunch';
+  const tags: string[] = params.tags 
+    ? JSON.parse(params.tags as string) 
+    : [];
 
   const handleSaveAnother = () => {
     // Navigate back to gallery picker
@@ -41,29 +58,47 @@ export default function OutfitSavedScreen() {
           character energy 💅
         </Text>
 
+        {/* Photos Display */}
+        {selectedPhotos.length > 0 && (
+          <View style={styles.photosContainer}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.photosScrollContainer}
+            >
+              {selectedPhotos.map((photo, index) => (
+                <View key={photo.id} style={styles.photoWrapper}>
+                  <Image source={{ uri: photo.uri }} style={styles.photo} />
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* Collection Tag */}
         <View style={styles.collectionContainer}>
           <View style={styles.collectionTag}>
             <FolderIcon color="#FFFFFF" />
-            <Text style={styles.collectionText}>Brunch</Text>
+            <Text style={styles.collectionText}>{selectedCollection}</Text>
           </View>
         </View>
       </View>
 
       {/* Bottom Actions */}
       <View style={styles.bottomContainer}>
-        <TouchableOpacity
-          style={styles.saveAnotherButton}
+        <Button
+          title="🔥 Save another outfit"
           onPress={handleSaveAnother}
-        >
-          <Text style={styles.saveAnotherButtonText}>
-            🔥 Save another outfit
-          </Text>
-        </TouchableOpacity>
+          variant="primary"
+          fullWidth
+        />
 
-        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-          <Text style={styles.closeButtonText}>Close</Text>
-        </TouchableOpacity>
+        <Button
+          title="Close"
+          onPress={handleClose}
+          variant="ghost"
+          fullWidth
+        />
       </View>
     </SafeAreaView>
   );
@@ -104,6 +139,22 @@ const styles = StyleSheet.create({
   collectionContainer: {
     alignItems: "center",
   },
+  photosContainer: {
+    marginBottom: 24,
+    width: '100%',
+  },
+  photosScrollContainer: {
+    paddingHorizontal: 16,
+  },
+  photoWrapper: {
+    marginRight: 12,
+  },
+  photo: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: BrandColors.black4,
+  },
   collectionTag: {
     flexDirection: "row",
     alignItems: "center",
@@ -121,25 +172,5 @@ const styles = StyleSheet.create({
   bottomContainer: {
     padding: 24,
     gap: 16,
-  },
-  saveAnotherButton: {
-    backgroundColor: BrandColors.primaryBlack,
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  saveAnotherButtonText: {
-    fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 16,
-    color: BrandColors.white,
-  },
-  closeButton: {
-    alignItems: "center",
-    paddingVertical: 8,
-  },
-  closeButtonText: {
-    fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 16,
-    color: BrandColors.primaryBlack,
   },
 });
