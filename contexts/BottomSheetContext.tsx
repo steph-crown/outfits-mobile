@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useState,
   useEffect,
+  useCallback,
 } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { CustomBottomSheet } from "@/components/ui/BottomSheet";
@@ -34,10 +35,10 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [config, setConfig] = useState<BottomSheetConfig | null>(null);
 
-  const openBottomSheet = (newConfig: BottomSheetConfig) => {
+  const openBottomSheet = useCallback((newConfig: BottomSheetConfig) => {
     setConfig(newConfig);
     setIsOpen(true);
-  };
+  }, []);
 
   // Use useEffect to expand after the component is rendered
   useEffect(() => {
@@ -49,7 +50,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     }
   }, [isOpen, config]);
 
-  const closeBottomSheet = () => {
+  const closeBottomSheet = useCallback(() => {
     bottomSheetRef.current?.close();
     setIsOpen(false);
     if (config?.onClose) {
@@ -57,13 +58,13 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     }
     // Clear config after a delay to allow animation to complete
     setTimeout(() => setConfig(null), 300);
-  };
+  }, [config]);
 
-  const contextValue: BottomSheetContextType = {
+  const contextValue: BottomSheetContextType = React.useMemo(() => ({
     openBottomSheet,
     closeBottomSheet,
     isOpen,
-  };
+  }), [openBottomSheet, closeBottomSheet, isOpen]);
 
   return (
     <BottomSheetContext.Provider value={contextValue}>

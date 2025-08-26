@@ -73,27 +73,34 @@ const CollectionsContent = ({
 );
 
 const TagsContent = ({
-  tags,
-  onAddTag,
-  onRemoveTag,
+  tags: initialTags,
+  onTagsChange,
 }: {
   tags: string[];
-  onAddTag: (tag: string) => void;
-  onRemoveTag: (index: number) => void;
+  onTagsChange: (newTags: string[]) => void;
 }) => {
   const [newTag, setNewTag] = useState("");
+  const [localTags, setLocalTags] = useState<string[]>(initialTags);
 
   const handleAddTag = () => {
     if (newTag.trim()) {
-      onAddTag(newTag.trim());
+      const updatedTags = [...localTags, newTag.trim()];
+      setLocalTags(updatedTags);
+      onTagsChange(updatedTags); // Pass the entire updated array
       setNewTag("");
     }
   };
 
+  const handleRemoveTag = (index: number) => {
+    const updatedTags = localTags.filter((_, i) => i !== index);
+    setLocalTags(updatedTags);
+    onTagsChange(updatedTags); // Pass the entire updated array
+  };
+
+  console.log("TagsContent rendering with local tags:", localTags); // Debug log
+
   return (
     <View style={styles.bottomSheetContent}>
-      {/* <Text style={styles.bottomSheetTitle}>Add Tags</Text> */}
-
       <View style={styles.tagInputContainer}>
         <InputField
           label="Tag"
@@ -117,18 +124,20 @@ const TagsContent = ({
         />
       </View>
 
-      <View style={styles.tagsContainer}>
-        {tags.map((tag, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.tagChip}
-            onPress={() => onRemoveTag(index)}
-          >
-            <Text style={styles.tagChipText}>#{tag}</Text>
-            <Text style={styles.tagRemoveText}>×</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {localTags.length > 0 && (
+        <View style={styles.tagsContainer}>
+          {localTags.map((tag, index) => (
+            <TouchableOpacity
+              key={`${tag}-${index}`} // Add index to ensure unique keys
+              style={styles.tagChip}
+              onPress={() => handleRemoveTag(index)}
+            >
+              <Text style={styles.tagChipText}>#{tag}</Text>
+              <Text style={styles.tagRemoveText}>×</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
@@ -170,7 +179,7 @@ export default function CreateOutfitScreen() {
         console.error("Error parsing selected photos:", error);
       }
     }
-  }, [params.selectedPhotos]); // Only depend on selectedPhotos param
+  }, [params.selectedPhotos, selectedPhotos.length]); // Only depend on selectedPhotos param
 
   const handleBack = () => {
     router.back();
@@ -198,8 +207,7 @@ export default function CreateOutfitScreen() {
       content: (
         <TagsContent
           tags={tags}
-          onAddTag={(tag) => setTags([...tags, tag])}
-          onRemoveTag={(index) => setTags(tags.filter((_, i) => i !== index))}
+          onTagsChange={(newTags) => setTags(newTags)}
         />
       ),
     });
