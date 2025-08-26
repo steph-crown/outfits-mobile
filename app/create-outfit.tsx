@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-  Image,
   Alert,
 } from "react-native";
+import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
@@ -154,15 +154,22 @@ export default function CreateOutfitScreen() {
   ];
 
   React.useEffect(() => {
-    if (params.selectedPhotos) {
+    console.log("Effect triggered with params:", params.selectedPhotos);
+    if (params.selectedPhotos && selectedPhotos.length === 0) {
       try {
         const photos = JSON.parse(params.selectedPhotos as string);
-        setSelectedPhotos(photos);
+        // Decode the URIs
+        const decodedPhotos = photos.map((photo: SelectedPhoto) => ({
+          ...photo,
+          uri: decodeURIComponent(photo.uri),
+        }));
+        console.log("Setting decoded photos:", decodedPhotos);
+        setSelectedPhotos(decodedPhotos);
       } catch (error) {
         console.error("Error parsing selected photos:", error);
       }
     }
-  }, [params.selectedPhotos]);
+  }, [params.selectedPhotos]); // Only depend on selectedPhotos param
 
   const handleBack = () => {
     router.back();
@@ -215,6 +222,8 @@ export default function CreateOutfitScreen() {
     });
   };
 
+  console.log({ selectedPhotos });
+
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
@@ -222,6 +231,7 @@ export default function CreateOutfitScreen() {
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <BackArrowIcon />
         </TouchableOpacity>
+
         <Text style={styles.headerTitle}>New outfit</Text>
         <TouchableOpacity style={styles.fromGalleryButton}>
           <Text style={styles.fromGalleryText}>From Gallery</Text>
@@ -237,13 +247,39 @@ export default function CreateOutfitScreen() {
             style={styles.photosScrollView}
             contentContainerStyle={styles.photosContainer}
           >
-            {selectedPhotos.map((photo, index) => (
-              <Image
-                key={photo.id}
-                source={{ uri: photo.uri }}
-                style={styles.selectedPhoto}
-              />
-            ))}
+            {selectedPhotos.map((photo, index) => {
+              console.log(`Rendering photo ${index}:`, photo.uri);
+
+              // Ensure proper file URI format
+              let properUri = photo.uri;
+              if (!properUri.startsWith("file://")) {
+                properUri = `file://${properUri}`;
+              }
+
+              console.log(`Using URI: ${properUri}`);
+
+              return (
+                <View key={photo.id} style={{ marginRight: 12 }}>
+                  <Image
+                    source={{ uri: properUri }}
+                    style={styles.selectedPhoto}
+                    contentFit="cover"
+                    transition={200}
+                    onError={(error) => {
+                      console.log(`Image load error for ${properUri}:`, error);
+                    }}
+                    onLoad={() => {
+                      console.log(`Image loaded successfully: ${properUri}`);
+                    }}
+                  />
+                  <Text
+                    style={{ marginTop: 8, fontSize: 12, textAlign: "center" }}
+                  >
+                    Photo {index + 1}
+                  </Text>
+                </View>
+              );
+            })}
           </ScrollView>
         )}
 
@@ -361,6 +397,8 @@ const styles = StyleSheet.create({
     width: 200,
     height: 300,
     borderRadius: 12,
+    backgroundColor: "#f0f0f0", // Add background to see if image area is visible
+    marginRight: 12,
   },
   section: {
     paddingHorizontal: 16,

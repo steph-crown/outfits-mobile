@@ -166,10 +166,15 @@ export default function GalleryPicker() {
         console.log("Selected photos from picker:", selectedAssets.length);
         
         // Navigate to create outfit with selected photos
+        const encodedPhotos = selectedAssets.map(asset => ({
+          ...asset,
+          uri: encodeURIComponent(asset.uri)
+        }));
+        
         router.push({
           pathname: '/create-outfit',
           params: {
-            selectedPhotos: JSON.stringify(selectedAssets),
+            selectedPhotos: JSON.stringify(encodedPhotos),
           },
         });
       }

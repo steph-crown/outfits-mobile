@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  Image,
   ScrollView,
 } from "react-native";
+import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
@@ -68,7 +68,17 @@ export default function OutfitSavedScreen() {
             >
               {selectedPhotos.map((photo, index) => (
                 <View key={photo.id} style={styles.photoWrapper}>
-                  <Image source={{ uri: photo.uri }} style={styles.photo} />
+                  <Image 
+                    source={{ uri: photo.uri }} 
+                    style={styles.photo}
+                    contentFit="cover"
+                    onError={(error) => {
+                      console.log("Image load error in outfit-saved:", error);
+                    }}
+                    onLoad={() => {
+                      console.log("Image loaded successfully in outfit-saved:", photo.uri);
+                    }}
+                  />
                 </View>
               ))}
             </ScrollView>
