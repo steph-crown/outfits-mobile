@@ -12,6 +12,7 @@ import { LogBox } from "react-native";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { BrandColors } from "@/constants/Colors";
+import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
 
 // Disable LogBox warnings and error overlays
 LogBox.ignoreAllLogs();
@@ -48,34 +49,48 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
         <SafeAreaProvider>
-          <ThemeProvider value={DefaultTheme}>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="onboarding"
-                options={{ headerShown: false }}
+          <BottomSheetProvider>
+            <ThemeProvider value={DefaultTheme}>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="onboarding"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="signup" options={{ headerShown: false }} />
+                <Stack.Screen name="login" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="outfit-detail"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="gallery-picker"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="create-outfit"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="outfit-saved"
+                  options={{ headerShown: false }}
+                />
+
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <StatusBar style="dark" />
+              <Toaster
+                position="top-center"
+                theme="light"
+                richColors
+                closeButton
+                style={{
+                  backgroundColor: BrandColors.white,
+                }}
               />
-              <Stack.Screen name="signup" options={{ headerShown: false }} />
-              <Stack.Screen name="login" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="outfit-detail"
-                options={{ headerShown: false }}
-              />
-              1
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <StatusBar style="dark" />
-            <Toaster
-              position="top-center"
-              theme="light"
-              richColors
-              closeButton
-              style={{
-                backgroundColor: BrandColors.white,
-              }}
-            />
-          </ThemeProvider>
+            </ThemeProvider>
+          </BottomSheetProvider>
         </SafeAreaProvider>
       </ErrorBoundary>
     </GestureHandlerRootView>

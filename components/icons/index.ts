@@ -14,3 +14,6 @@ export { InstagramIcon } from './InstagramIcon';
 export { FacebookIcon } from './FacebookIcon';
 export { BrowserIcon } from './BrowserIcon';
 export { ArrowRightIcon } from './ArrowRightIcon';
+export { CloseIcon } from './CloseIcon';
+export { ChevronDownIcon } from './ChevronDownIcon';
+export { HashtagIcon } from './HashtagIcon';

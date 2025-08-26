@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
-import { Fonts, FontStyles } from "@/constants/Fonts";
+import { Fonts } from "@/constants/Fonts";
 import {
   GalleryIcon,
   CameraIcon,
@@ -12,10 +13,24 @@ import {
   FacebookIcon,
   ArrowRightIcon,
 } from "@/components/icons";
+import { useBottomSheet } from "@/contexts/BottomSheetContext";
 
 export const UploadContent: React.FC = () => {
+  const router = useRouter();
+  const { closeBottomSheet } = useBottomSheet();
+
+  const handleGalleryPress = () => {
+    closeBottomSheet();
+    router.push('/gallery-picker');
+  };
+
   const handleOptionPress = (option: string) => {
-    Alert.alert("Upload Option", `Selected: ${option}`);
+    if (option === "Gallery") {
+      handleGalleryPress();
+    } else {
+      // For other options, you can implement later
+      console.log(`Selected: ${option}`);
+    }
   };
 
   const uploadDirectOptions = [
@@ -163,7 +178,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   optionText: {
-    ...FontStyles.body,
     fontFamily: Fonts.MonaSans.SemiBold,
     color: BrandColors.primaryBlack,
     fontSize: 16,

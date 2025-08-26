@@ -12,10 +12,7 @@ import { useAuthStore } from "@/store/authStore";
 import { Fonts } from "@/constants/Fonts";
 import { scrollHomeToTop } from "./index";
 import { scrollCollectionsToTop } from "./collections";
-import {
-  BottomSheetProvider,
-  useBottomSheet,
-} from "@/contexts/BottomSheetContext";
+import { useBottomSheet } from "@/contexts/BottomSheetContext";
 import { CollectionsProvider } from "@/contexts/CollectionsContext";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { UploadContent } from "../../components/UploadContent";
@@ -219,11 +216,9 @@ function TabsContent() {
 export default function TabLayout() {
   return (
     <BottomSheetModalProvider>
-      <BottomSheetProvider>
-        <CollectionsProvider>
-          <TabsContent />
-        </CollectionsProvider>
-      </BottomSheetProvider>
+      <CollectionsProvider>
+        <TabsContent />
+      </CollectionsProvider>
     </BottomSheetModalProvider>
   );
 }
