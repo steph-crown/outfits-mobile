@@ -194,7 +194,7 @@ export default function CreateOutfitScreen() {
 
   const handleAddTags = () => {
     openBottomSheet({
-      title: "Tags",
+      title: "Select tags",
       content: (
         <TagsContent
           tags={tags}
