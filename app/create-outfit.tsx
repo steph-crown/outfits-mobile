@@ -86,7 +86,7 @@ const TagsContent = ({
     if (newTag.trim()) {
       const updatedTags = [...localTags, newTag.trim()];
       setLocalTags(updatedTags);
-      onTagsChange(updatedTags); // Pass the entire updated array
+      onTagsChange(updatedTags);
       setNewTag("");
     }
   };
@@ -94,7 +94,7 @@ const TagsContent = ({
   const handleRemoveTag = (index: number) => {
     const updatedTags = localTags.filter((_, i) => i !== index);
     setLocalTags(updatedTags);
-    onTagsChange(updatedTags); // Pass the entire updated array
+    onTagsChange(updatedTags);
   };
 
   console.log("TagsContent rendering with local tags:", localTags); // Debug log
@@ -168,13 +168,9 @@ export default function CreateOutfitScreen() {
     if (params.selectedPhotos && selectedPhotos.length === 0) {
       try {
         const photos = JSON.parse(params.selectedPhotos as string);
-        // Decode the URIs
-        const decodedPhotos = photos.map((photo: SelectedPhoto) => ({
-          ...photo,
-          uri: decodeURIComponent(photo.uri),
-        }));
-        console.log("Setting decoded photos:", decodedPhotos);
-        setSelectedPhotos(decodedPhotos);
+        // Don't decode URIs - use them directly
+        console.log("Setting photos:", photos);
+        setSelectedPhotos(photos);
       } catch (error) {
         console.error("Error parsing selected photos:", error);
       }
@@ -205,10 +201,7 @@ export default function CreateOutfitScreen() {
     openBottomSheet({
       title: "Select tags",
       content: (
-        <TagsContent
-          tags={tags}
-          onTagsChange={(newTags) => setTags(newTags)}
-        />
+        <TagsContent tags={tags} onTagsChange={(newTags) => setTags(newTags)} />
       ),
     });
   };
@@ -219,7 +212,6 @@ export default function CreateOutfitScreen() {
       return;
     }
 
-    // Navigate to success screen with the outfit data
     router.replace({
       pathname: "/outfit-saved",
       params: {
@@ -231,11 +223,8 @@ export default function CreateOutfitScreen() {
     });
   };
 
-  console.log({ selectedPhotos });
-
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -263,11 +252,8 @@ export default function CreateOutfitScreen() {
             {selectedPhotos.map((photo, index) => {
               console.log(`Rendering photo ${index}:`, photo.uri);
 
-              // Ensure proper file URI format
-              let properUri = photo.uri;
-              if (!properUri.startsWith("file://")) {
-                properUri = `file://${properUri}`;
-              }
+              // Use the URI directly as provided by expo-image-picker
+              const properUri = photo.uri;
 
               console.log(`Using URI: ${properUri}`);
 

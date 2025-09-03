@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: BrandColors.white,
-    paddingHorizontal: 8,
+    paddingLeft: 0,
     position: "relative",
   },
   header: {
@@ -294,6 +294,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 4,
   },
   imageContainer: {
     position: "relative",

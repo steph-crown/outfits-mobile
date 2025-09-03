@@ -5,11 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  Image,
   Dimensions,
   SafeAreaView,
   Alert,
 } from "react-native";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from "expo-image-picker";
@@ -35,11 +35,10 @@ export default function GalleryPicker() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
-  
+
   const [photos, setPhotos] = useState<MediaAsset[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<MediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
-  const [mediaCategory, setMediaCategory] = useState("Recent");
 
   const loadPhotos = useCallback(async () => {
     try {
@@ -47,12 +46,15 @@ export default function GalleryPicker() {
       console.log("Starting to load photos...");
       console.log("Permission status:", permissionResponse?.status);
 
-      if (permissionResponse?.status !== 'granted') {
+      if (permissionResponse?.status !== "granted") {
         console.log("Permission not granted, requesting...");
         const newPermission = await requestPermission();
-        if (newPermission.status !== 'granted') {
+        if (newPermission.status !== "granted") {
           console.log("Permission denied");
-          Alert.alert("Permission Required", "Please grant permission to access your photo library.");
+          Alert.alert(
+            "Permission Required",
+            "Please grant permission to access your photo library."
+          );
           return;
         }
       }
@@ -64,22 +66,22 @@ export default function GalleryPicker() {
         sortBy: [MediaLibrary.SortBy.creationTime],
       });
 
-      console.log("Assets result:", { 
-        totalCount: result.totalCount, 
+      console.log("Assets result:", {
+        totalCount: result.totalCount,
         assets: result.assets.length,
-        hasNextPage: result.hasNextPage 
+        hasNextPage: result.hasNextPage,
       });
 
       if (result.assets.length === 0) {
         console.log("No assets found, trying to get all albums...");
-        
+
         // Try getting from all albums
         const albums = await MediaLibrary.getAlbumsAsync({
           includeSmartAlbums: true,
         });
-        
+
         console.log("Found albums:", albums.length);
-        
+
         if (albums.length > 0) {
           // Try getting assets from the first album (usually Camera Roll)
           const albumAssets = await MediaLibrary.getAssetsAsync({
@@ -87,9 +89,9 @@ export default function GalleryPicker() {
             mediaType: MediaLibrary.MediaType.photo,
             first: 100,
           });
-          
+
           console.log("Album assets:", albumAssets.totalCount);
-          
+
           if (albumAssets.assets.length > 0) {
             const photosWithSelection = albumAssets.assets.map((asset) => ({
               id: asset.id,
@@ -100,7 +102,28 @@ export default function GalleryPicker() {
               selected: false,
             }));
 
-            setPhotos(photosWithSelection);
+            // Convert ph:// URIs to usable file URIs
+            const photosWithUsableUris = await Promise.all(
+              photosWithSelection.map(async (photo) => {
+                try {
+                  const assetInfo = await MediaLibrary.getAssetInfoAsync(
+                    photo.id
+                  );
+                  return {
+                    ...photo,
+                    uri: assetInfo.localUri || assetInfo.uri || photo.uri,
+                  };
+                } catch (error) {
+                  console.log(
+                    `Failed to get asset info for ${photo.id}:`,
+                    error
+                  );
+                  return photo; // fallback to original
+                }
+              })
+            );
+
+            setPhotos(photosWithUsableUris);
             setLoading(false);
             return;
           }
@@ -117,37 +140,61 @@ export default function GalleryPicker() {
       }));
 
       console.log("Final photos count:", photosWithSelection.length);
-      setPhotos(photosWithSelection);
-      
+
+      // Convert ph:// URIs to usable file URIs
+      const photosWithUsableUris = await Promise.all(
+        photosWithSelection.map(async (photo) => {
+          try {
+            const assetInfo = await MediaLibrary.getAssetInfoAsync(photo.id);
+            return {
+              ...photo,
+              uri: assetInfo.localUri || assetInfo.uri || photo.uri,
+            };
+          } catch (error) {
+            console.log(`Failed to get asset info for ${photo.id}:`, error);
+            return photo; // fallback to original
+          }
+        })
+      );
+
+      console.log("Photos with usable URIs:", photosWithUsableUris.length);
+      setPhotos(photosWithUsableUris);
     } catch (error) {
       console.error("Error loading photos:", error);
-      Alert.alert("Error", `Failed to load photos: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      Alert.alert(
+        "Error",
+        `Failed to load photos: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setLoading(false);
     }
   }, [permissionResponse, requestPermission]);
 
   useEffect(() => {
-    if (permissionResponse?.status === 'granted') {
+    if (permissionResponse?.status === "granted") {
       loadPhotos();
     }
-  }, [permissionResponse, loadPhotos]);  const pickImagesWithImagePicker = useCallback(async () => {
+  }, [permissionResponse, loadPhotos]);
+  const pickImagesWithImagePicker = useCallback(async () => {
     try {
       // Request permission for image picker
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (status !== 'granted') {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (status !== "granted") {
         Alert.alert(
-          'Permission Required',
-          'We need camera roll permissions to select photos.',
-          [{ text: 'OK' }]
+          "Permission Required",
+          "We need camera roll permissions to select photos.",
+          [{ text: "OK" }]
         );
         return;
       }
 
       // Launch image picker with multiple selection
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'],
+        mediaTypes: ["images"],
         allowsMultipleSelection: true,
         quality: 0.8,
         aspect: [1, 1],
@@ -164,17 +211,13 @@ export default function GalleryPicker() {
         }));
 
         console.log("Selected photos from picker:", selectedAssets.length);
-        
+
         // Navigate to create outfit with selected photos
-        const encodedPhotos = selectedAssets.map(asset => ({
-          ...asset,
-          uri: encodeURIComponent(asset.uri)
-        }));
-        
+        // Don't encode URIs - pass them directly
         router.push({
-          pathname: '/create-outfit',
+          pathname: "/create-outfit",
           params: {
-            selectedPhotos: JSON.stringify(encodedPhotos),
+            selectedPhotos: JSON.stringify(selectedAssets),
           },
         });
       }
@@ -186,16 +229,13 @@ export default function GalleryPicker() {
 
   useEffect(() => {
     console.log("Permission effect, status:", permissionResponse?.status);
-    if (permissionResponse?.status === 'granted') {
+    if (permissionResponse?.status === "granted") {
       // Try to load photos, but expect it might fail in Expo Go
       loadPhotos();
-    } else if (permissionResponse?.status === 'denied') {
+    } else if (permissionResponse?.status === "denied") {
       console.log("Permission denied");
     }
   }, [permissionResponse, loadPhotos]);
-
-  // Check if we're in Expo Go environment
-  const isExpoGo = __DEV__ && !process.env.EXPO_PUBLIC_USE_DEV_BUILD;
 
   const togglePhotoSelection = (photo: MediaAsset) => {
     const isSelected = selectedPhotos.find((p) => p.id === photo.id);
@@ -241,7 +281,15 @@ export default function GalleryPicker() {
         ]}
         onPress={() => togglePhotoSelection(item)}
       >
-        <Image source={{ uri: item.uri }} style={styles.photo} />
+        <Image
+          source={{ uri: item.uri }}
+          style={styles.photo}
+          contentFit="cover"
+          transition={200}
+          onError={(error) => {
+            console.log(`Error loading photo ${item.id}:`, error);
+          }}
+        />
         {isSelected && (
           <View style={styles.selectionOverlay}>
             <View style={styles.selectionIndicator}>
@@ -259,15 +307,13 @@ export default function GalleryPicker() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
-          <Text style={styles.permissionText}>
-            Loading permissions...
-          </Text>
+          <Text style={styles.permissionText}>Loading permissions...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  if (permissionResponse.status !== 'granted') {
+  if (permissionResponse.status !== "granted") {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
@@ -294,7 +340,7 @@ export default function GalleryPicker() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.categorySelector}>
-          <Text style={styles.categoryText}>{mediaCategory}</Text>
+          <Text style={styles.categoryText}>Recent</Text>
           <ChevronDownIcon width={20} height={20} fill="#000" />
         </TouchableOpacity>
 
@@ -325,12 +371,20 @@ export default function GalleryPicker() {
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>📱 Expo Go Limitation</Text>
           <Text style={styles.debugText}>
-            Expo Go can&apos;t access your full photo library due to Android permission changes.
+            Expo Go can&apos;t access your full photo library due to Android
+            permission changes.
           </Text>
           <Text style={styles.debugText}>
             Use the photo picker below to select photos instead:
           </Text>
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 20, justifyContent: 'center' }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              marginTop: 20,
+              justifyContent: "center",
+            }}
+          >
             <Button
               title="📸 Pick Photos"
               onPress={pickImagesWithImagePicker}
@@ -338,8 +392,14 @@ export default function GalleryPicker() {
               fullWidth={false}
             />
           </View>
-          <Text style={[styles.debugText, { marginTop: 20, fontSize: 12, opacity: 0.6 }]}>
-            For full gallery access, create a development build: docs.expo.dev/develop/development-builds/
+          <Text
+            style={[
+              styles.debugText,
+              { marginTop: 20, fontSize: 12, opacity: 0.6 },
+            ]}
+          >
+            For full gallery access, create a development build:
+            docs.expo.dev/develop/development-builds/
           </Text>
         </View>
       ) : (

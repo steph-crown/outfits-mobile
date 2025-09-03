@@ -28,7 +28,6 @@ export default function CollectionFilterScreen() {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
-  // Create filters with the selected collection first
   const filters = [
     {
       name: collectionName,
