@@ -2,7 +2,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 // Base URL for your backend API
-const BASE_URL = "http://10.212.40.239:3001/api"; // Using your computer's IP address with /api prefix
+const BASE_URL = "http://172.29.127.1:3001/api"; // Using your computer's IP address with /api prefix
 
 // Create axios instance
 const api = axios.create({
@@ -82,20 +82,23 @@ export const authAPI = {
 // Secure token storage utilities
 export const tokenStorage = {
   async setTokens(accessToken: string, refreshToken?: string) {
-    console.log("💾 Storing tokens:", { accessToken: !!accessToken, refreshToken: !!refreshToken });
+    console.log("💾 Storing tokens:", {
+      accessToken: !!accessToken,
+      refreshToken: !!refreshToken,
+    });
     try {
       if (!accessToken) {
         throw new Error("Access token is required but was undefined/null");
       }
-      
+
       await SecureStore.setItemAsync("access_token", accessToken);
-      
+
       if (refreshToken) {
         await SecureStore.setItemAsync("refresh_token", refreshToken);
       } else {
         console.log("⚠️ No refresh token provided, skipping storage");
       }
-      
+
       console.log("✅ Tokens stored successfully");
     } catch (error) {
       console.error("❌ Error storing tokens:", error);

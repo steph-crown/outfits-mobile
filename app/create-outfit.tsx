@@ -97,8 +97,6 @@ const TagsContent = ({
     onTagsChange(updatedTags);
   };
 
-  console.log("TagsContent rendering with local tags:", localTags); // Debug log
-
   return (
     <View style={styles.bottomSheetContent}>
       <View style={styles.tagInputContainer}>
@@ -154,6 +152,9 @@ export default function CreateOutfitScreen() {
     useState<Collection | null>(null);
   const [tags, setTags] = useState<string[]>([]);
 
+  // Track if we've already processed the initial params to prevent infinite loops
+  const hasProcessedInitialParams = React.useRef(false);
+
   // Mock collections data
   const collections: Collection[] = [
     { id: "1", name: "Brunch" },
@@ -164,20 +165,65 @@ export default function CreateOutfitScreen() {
   ];
 
   React.useEffect(() => {
-    console.log("Effect triggered with params:", params.selectedPhotos);
+    // Only process params once to prevent infinite loops
+    if (hasProcessedInitialParams.current) {
+      return;
+    }
+
+    console.log("Effect triggered with params:", params);
+
+    // Handle shared content from share intent
+    if (params.sharedUrl && typeof params.sharedUrl === "string") {
+      console.log("Processing shared URL:", params.sharedUrl);
+      setNote(`Shared from: ${params.sharedUrl}`);
+      hasProcessedInitialParams.current = true;
+    }
+
+    // Handle shared media from share intent
+    if (params.sharedMedia && typeof params.sharedMedia === "string") {
+      try {
+        const mediaFiles = JSON.parse(params.sharedMedia);
+        console.log(
+          "Processing shared media files:",
+          mediaFiles.length,
+          "files"
+        );
+
+        // Convert shared media files to the format expected by the component
+        const photos = mediaFiles.map((file: string, index: number) => ({
+          id: `shared-${index}`,
+          uri: file,
+        }));
+
+        setSelectedPhotos(photos);
+        hasProcessedInitialParams.current = true;
+      } catch (error) {
+        console.error("Error parsing shared media:", error);
+      }
+    }
+
+    // Handle regular photo selection from gallery
     if (params.selectedPhotos && selectedPhotos.length === 0) {
       try {
         const photos = JSON.parse(params.selectedPhotos as string);
-        // Don't decode URIs - use them directly
         console.log("Setting photos:", photos);
         setSelectedPhotos(photos);
+        hasProcessedInitialParams.current = true;
       } catch (error) {
         console.error("Error parsing selected photos:", error);
       }
     }
-  }, [params.selectedPhotos, selectedPhotos.length]); // Only depend on selectedPhotos param
+  }, [params, selectedPhotos.length]);
+
+  // Reset the processing flag when component unmounts
+  React.useEffect(() => {
+    return () => {
+      hasProcessedInitialParams.current = false;
+    };
+  }, []);
 
   const handleBack = () => {
+    hasProcessedInitialParams.current = false;
     router.back();
   };
 
@@ -250,12 +296,8 @@ export default function CreateOutfitScreen() {
             contentContainerStyle={styles.photosContainer}
           >
             {selectedPhotos.map((photo, index) => {
-              console.log(`Rendering photo ${index}:`, photo.uri);
-
               // Use the URI directly as provided by expo-image-picker
               const properUri = photo.uri;
-
-              console.log(`Using URI: ${properUri}`);
 
               return (
                 <View key={photo.id}>

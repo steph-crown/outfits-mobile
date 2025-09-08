@@ -13,12 +13,16 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { BrandColors } from "@/constants/Colors";
 import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
+import { useOutfitShareIntent } from "@/hooks/useShareIntent";
 
 // Disable LogBox warnings and error overlays
 LogBox.ignoreAllLogs();
 
 export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
+
+  // Initialize share intent handler
+  useOutfitShareIntent();
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
