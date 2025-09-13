@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { FolderIcon } from "@/components/icons/TabIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/common/Button";
 
 interface SelectedPhoto {
   id: string;
@@ -25,14 +19,12 @@ export default function OutfitSavedScreen() {
   const params = useLocalSearchParams();
 
   // Parse the received parameters
-  const selectedPhotos: SelectedPhoto[] = params.selectedPhotos 
-    ? JSON.parse(params.selectedPhotos as string) 
+  const selectedPhotos: SelectedPhoto[] = params.selectedPhotos
+    ? JSON.parse(params.selectedPhotos as string)
     : [];
-  const note = params.note as string || '';
-  const selectedCollection = params.selectedCollection as string || 'Brunch';
-  const tags: string[] = params.tags 
-    ? JSON.parse(params.tags as string) 
-    : [];
+  const note = (params.note as string) || "";
+  const selectedCollection = (params.selectedCollection as string) || "Brunch";
+  const tags: string[] = params.tags ? JSON.parse(params.tags as string) : [];
 
   const handleSaveAnother = () => {
     // Navigate back to gallery picker
@@ -61,22 +53,25 @@ export default function OutfitSavedScreen() {
         {/* Photos Display */}
         {selectedPhotos.length > 0 && (
           <View style={styles.photosContainer}>
-            <ScrollView 
-              horizontal 
+            <ScrollView
+              horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.photosScrollContainer}
             >
               {selectedPhotos.map((photo, index) => (
                 <View key={photo.id} style={styles.photoWrapper}>
-                  <Image 
-                    source={{ uri: photo.uri }} 
+                  <Image
+                    source={{ uri: photo.uri }}
                     style={styles.photo}
                     contentFit="cover"
                     onError={(error) => {
                       console.log("Image load error in outfit-saved:", error);
                     }}
                     onLoad={() => {
-                      console.log("Image loaded successfully in outfit-saved:", photo.uri);
+                      console.log(
+                        "Image loaded successfully in outfit-saved:",
+                        photo.uri
+                      );
                     }}
                   />
                 </View>
@@ -103,12 +98,7 @@ export default function OutfitSavedScreen() {
           fullWidth
         />
 
-        <Button
-          title="Close"
-          onPress={handleClose}
-          variant="ghost"
-          fullWidth
-        />
+        <Button title="Close" onPress={handleClose} variant="ghost" fullWidth />
       </View>
     </SafeAreaView>
   );
@@ -151,7 +141,7 @@ const styles = StyleSheet.create({
   },
   photosContainer: {
     marginBottom: 24,
-    width: '100%',
+    width: "100%",
   },
   photosScrollContainer: {
     paddingHorizontal: 16,

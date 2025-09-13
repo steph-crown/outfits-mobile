@@ -15,7 +15,7 @@ import { scrollCollectionsToTop } from "./collections";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
 import { CollectionsProvider } from "@/contexts/CollectionsContext";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { UploadContent } from "../../components/UploadContent";
+import { UploadContent } from "@/components/common/UploadContent";
 
 // Component that handles the tab navigation with bottom sheet integration
 function TabsContent() {

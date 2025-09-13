@@ -9,8 +9,8 @@ import "react-native-reanimated";
 import { Toaster } from "sonner-native";
 import { LogBox } from "react-native";
 
-import { SplashScreen } from "@/components/SplashScreen";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SplashScreen } from "@/components/layout/SplashScreen";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { BrandColors } from "@/constants/Colors";
 import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
 import { useOutfitShareIntent } from "@/hooks/useShareIntent";

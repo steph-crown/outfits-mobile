@@ -16,129 +16,19 @@ import { Fonts } from "@/constants/Fonts";
 import { BackArrowIcon, GalleryIcon, HashtagIcon } from "@/components/icons";
 import { FolderIcon } from "@/components/icons/TabIcons";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
-import { InputField } from "@/components/ui";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/common/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-interface SelectedPhoto {
-  id: string;
-  uri: string;
-}
-
-interface Collection {
-  id: string;
-  name: string;
-}
-
-const CollectionsContent = ({
-  collections,
-  selectedCollection,
-  onSelectCollection,
-}: {
-  collections: Collection[];
-  selectedCollection: Collection | null;
-  onSelectCollection: (collection: Collection) => void;
-}) => (
-  <View style={styles.bottomSheetContent}>
-    {/* <Text style={styles.bottomSheetTitle}>Select Collection</Text> */}
-    {collections.map((collection) => (
-      <TouchableOpacity
-        key={collection.id}
-        style={[
-          styles.collectionOption,
-          selectedCollection?.id === collection.id &&
-            styles.selectedCollectionOption,
-        ]}
-        onPress={() => onSelectCollection(collection)}
-      >
-        <FolderIcon
-          color={
-            selectedCollection?.id === collection.id
-              ? BrandColors.white
-              : "#050413"
-          }
-        />
-        <Text
-          style={[
-            styles.collectionOptionText,
-            selectedCollection?.id === collection.id &&
-              styles.selectedCollectionOptionText,
-          ]}
-        >
-          {collection.name}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
-
-const TagsContent = ({
-  tags: initialTags,
-  onTagsChange,
-}: {
-  tags: string[];
-  onTagsChange: (newTags: string[]) => void;
-}) => {
-  const [newTag, setNewTag] = useState("");
-  const [localTags, setLocalTags] = useState<string[]>(initialTags);
-
-  const handleAddTag = () => {
-    if (newTag.trim()) {
-      const updatedTags = [...localTags, newTag.trim()];
-      setLocalTags(updatedTags);
-      onTagsChange(updatedTags);
-      setNewTag("");
-    }
-  };
-
-  const handleRemoveTag = (index: number) => {
-    const updatedTags = localTags.filter((_, i) => i !== index);
-    setLocalTags(updatedTags);
-    onTagsChange(updatedTags);
-  };
-
-  return (
-    <View style={styles.bottomSheetContent}>
-      <View style={styles.tagInputContainer}>
-        <InputField
-          label="Tag"
-          placeholder="Enter a tag..."
-          value={newTag}
-          onChangeText={setNewTag}
-          onSubmitEditing={handleAddTag}
-          returnKeyType="done"
-          isBottomSheet={true}
-          icon={<HashtagIcon width={20} height={20} fill="#A0AEC0" />}
-        />
-      </View>
-
-      <View style={styles.tagButtonContainer}>
-        <Button
-          title="Add Tag"
-          onPress={handleAddTag}
-          variant="primary"
-          disabled={!newTag.trim()}
-          fullWidth
-        />
-      </View>
-
-      {localTags.length > 0 && (
-        <View style={styles.tagsContainer}>
-          {localTags.map((tag, index) => (
-            <TouchableOpacity
-              key={`${tag}-${index}`} // Add index to ensure unique keys
-              style={styles.tagChip}
-              onPress={() => handleRemoveTag(index)}
-            >
-              <Text style={styles.tagChipText}>#{tag}</Text>
-              <Text style={styles.tagRemoveText}>×</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-    </View>
-  );
-};
+import {
+  CollectionsSelector,
+  Collection,
+} from "@/components/forms/CollectionsSelector";
+import { TagsManager } from "@/components/forms/TagsManager";
+import { SelectedPhoto, ContentSource } from "@/types/shared";
+import {
+  detectPlatformFromUrl,
+  convertProcessedMediaToPhotos,
+  extractNoteFromProcessedData,
+} from "@/utils/contentUtils";
 
 export default function CreateOutfitScreen() {
   const router = useRouter();
@@ -151,6 +41,7 @@ export default function CreateOutfitScreen() {
   const [selectedCollection, setSelectedCollection] =
     useState<Collection | null>(null);
   const [tags, setTags] = useState<string[]>([]);
+  const [source, setSource] = useState<ContentSource>("gallery");
 
   // Track if we've already processed the initial params to prevent infinite loops
   const hasProcessedInitialParams = React.useRef(false);
@@ -172,10 +63,45 @@ export default function CreateOutfitScreen() {
 
     console.log("Effect triggered with params:", params);
 
+    // Handle processed data from processing screen
+    if (params.processedData && typeof params.processedData === "string") {
+      try {
+        const processedData = JSON.parse(params.processedData);
+        console.log("Processing processed data:", processedData);
+
+        // Convert processed media to photos
+        const photos = convertProcessedMediaToPhotos(processedData);
+        if (photos.length > 0) {
+          setSelectedPhotos(photos);
+          console.log(
+            "Set selected photos from processed data:",
+            photos.length
+          );
+        }
+
+        // Extract and set note
+        const extractedNote = extractNoteFromProcessedData(processedData);
+        if (extractedNote) {
+          setNote(extractedNote);
+        }
+
+        // Set source based on platform
+        if (processedData.platform) {
+          setSource(processedData.platform);
+        }
+
+        hasProcessedInitialParams.current = true;
+        return; // Don't process other params if we have processed data
+      } catch (error) {
+        console.error("Failed to parse processed data:", error);
+      }
+    }
+
     // Handle shared content from share intent
     if (params.sharedUrl && typeof params.sharedUrl === "string") {
       console.log("Processing shared URL:", params.sharedUrl);
       setNote(`Shared from: ${params.sharedUrl}`);
+      setSource(detectPlatformFromUrl(params.sharedUrl));
       hasProcessedInitialParams.current = true;
     }
 
@@ -196,6 +122,7 @@ export default function CreateOutfitScreen() {
         }));
 
         setSelectedPhotos(photos);
+        setSource("share_intent"); // Media files from share intent
         hasProcessedInitialParams.current = true;
       } catch (error) {
         console.error("Error parsing shared media:", error);
@@ -231,7 +158,7 @@ export default function CreateOutfitScreen() {
     openBottomSheet({
       title: "Select collection",
       content: (
-        <CollectionsContent
+        <CollectionsSelector
           collections={collections}
           selectedCollection={selectedCollection}
           onSelectCollection={(collection) => {
@@ -247,7 +174,7 @@ export default function CreateOutfitScreen() {
     openBottomSheet({
       title: "Select tags",
       content: (
-        <TagsContent tags={tags} onTagsChange={(newTags) => setTags(newTags)} />
+        <TagsManager tags={tags} onTagsChange={(newTags) => setTags(newTags)} />
       ),
     });
   };
@@ -280,10 +207,12 @@ export default function CreateOutfitScreen() {
           <Text style={styles.headerTitle}>New outfit</Text>
         </View>
 
-        <TouchableOpacity style={styles.fromGalleryButton}>
-          <GalleryIcon height={20} width={20} />
-          <Text style={styles.fromGalleryText}>From Gallery</Text>
-        </TouchableOpacity>
+        {source === "gallery" && (
+          <TouchableOpacity style={styles.fromGalleryButton}>
+            <GalleryIcon height={20} width={20} />
+            <Text style={styles.fromGalleryText}>From Gallery</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -322,8 +251,8 @@ export default function CreateOutfitScreen() {
         {/* Note Input */}
         <View style={styles.section}>
           <TextInput
-            // label="Note"
             placeholder="Add a note about these outfits..."
+            placeholderTextColor={BrandColors.black3}
             value={note}
             onChangeText={setNote}
             multiline
@@ -521,80 +450,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.MonaSans.SemiBold,
     fontSize: 16,
     color: BrandColors.white,
-  },
-  bottomSheetContent: {
-    paddingBottom: 32,
-  },
-
-  collectionOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 100,
-    marginBottom: 4,
-  },
-  selectedCollectionOption: {
-    backgroundColor: BrandColors.primaryBlack,
-  },
-  collectionOptionText: {
-    fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 14,
-    color: BrandColors.primaryBlack,
-    marginLeft: 12,
-  },
-  selectedCollectionOptionText: {
-    color: BrandColors.white,
-  },
-  tagInputContainer: {
-    marginBottom: 16,
-  },
-  tagButtonContainer: {
-    marginBottom: 16,
-  },
-  tagInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontFamily: Fonts.MonaSans.Medium,
-    fontSize: 16,
-  },
-  addTagButton: {
-    backgroundColor: BrandColors.primaryBlack,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  addTagButtonText: {
-    color: BrandColors.white,
-    fontFamily: Fonts.MonaSans.SemiBold,
-    fontSize: 14,
-  },
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  tagChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    gap: 4,
-  },
-  tagChipText: {
-    fontFamily: Fonts.MonaSans.Medium,
-    fontSize: 14,
-    color: BrandColors.primaryBlack,
-  },
-  tagRemoveText: {
-    fontSize: 16,
-    color: BrandColors.black3,
   },
   headerLeft: {
     display: "flex",

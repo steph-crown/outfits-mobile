@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BrandColors } from '@/constants/Colors';
-import { useAuthStore } from '@/store/authStore';
-import { Button } from '@/components/ui';
-import { router } from 'expo-router';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BrandColors } from "@/constants/Colors";
+import { useAuthStore } from "@/store/authStore";
+import { Button } from "@/components/common/Button";
+import { router } from "expo-router";
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -12,7 +12,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await logout();
-    router.replace('/onboarding');
+    router.replace("/onboarding");
   };
 
   return (
@@ -20,7 +20,7 @@ export default function ProfileScreen() {
       <View style={styles.content}>
         <Text style={styles.title}>Profile</Text>
         <Text style={styles.email}>{user?.email}</Text>
-        
+
         <Button
           title="Logout"
           onPress={handleLogout}
@@ -39,19 +39,19 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
-    fontFamily: 'Mona-Sans-Bold',
+    fontFamily: "Mona-Sans-Bold",
     color: BrandColors.primaryBlack,
     marginBottom: 16,
   },
   email: {
     fontSize: 16,
-    fontFamily: 'Mona-Sans-Regular',
+    fontFamily: "Mona-Sans-Regular",
     color: BrandColors.black3,
     marginBottom: 32,
   },

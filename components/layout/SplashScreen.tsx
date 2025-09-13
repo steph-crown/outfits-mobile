@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet, Animated } from "react-native";
 import { BrandColors } from "@/constants/Colors";
-import { OutFitsLogo } from "./OutFitsLogo";
-import { ThemedText } from "./ThemedText";
+import { OutFitsLogo } from "@/components/common/OutFitsLogo";
+import { ThemedText } from "@/components/common/ThemedText";
 
 interface SplashScreenProps {
   onFinish?: () => void;

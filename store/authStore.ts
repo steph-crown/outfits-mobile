@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { authAPI, tokenStorage } from "@/lib/api";
+import { authAPI } from "@/lib/api";
+import { tokenStorage } from "@/services/tokenStorage";
 
 export interface User {
   id: string;

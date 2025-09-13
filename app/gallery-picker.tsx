@@ -16,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { CloseIcon, ChevronDownIcon } from "@/components/icons";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/common/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: screenWidth } = Dimensions.get("window");

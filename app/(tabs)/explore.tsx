@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,47 +6,47 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BrandColors } from '@/constants/Colors';
-import { FontStyles } from '@/constants/Fonts';
-import { Button } from '@/components/ui';
-import { useAuthGuard } from '@/hooks/useAuth';
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BrandColors } from "@/constants/Colors";
+import { FontStyles } from "@/constants/Fonts";
+import { Button } from "@/components/common/Button";
+import { useAuthGuard } from "@/hooks/useAuth";
 
 // Mock data for inspiration collections
 const mockCollections = [
   {
-    id: '1',
-    title: 'Summer Vibes',
+    id: "1",
+    title: "Summer Vibes",
     count: 24,
-    color: '#3B82F6', // Blue
+    color: "#3B82F6", // Blue
   },
   {
-    id: '2',
-    title: 'Work Attire',
+    id: "2",
+    title: "Work Attire",
     count: 18,
-    color: '#10B981', // Green
+    color: "#10B981", // Green
   },
   {
-    id: '3',
-    title: 'Casual Friday',
+    id: "3",
+    title: "Casual Friday",
     count: 12,
-    color: '#F59E0B', // Orange
+    color: "#F59E0B", // Orange
   },
   {
-    id: '4',
-    title: 'Date Night',
+    id: "4",
+    title: "Date Night",
     count: 8,
     color: BrandColors.primary,
   },
 ];
 
 const mockTrends = [
-  'Oversized Blazers',
-  'Vintage Denim',
-  'Minimalist Jewelry',
-  'Earth Tones',
-  'Sustainable Fashion',
+  "Oversized Blazers",
+  "Vintage Denim",
+  "Minimalist Jewelry",
+  "Earth Tones",
+  "Sustainable Fashion",
 ];
 
 export default function ExploreScreen() {
@@ -61,7 +61,11 @@ export default function ExploreScreen() {
     );
   }
 
-  const renderCollectionItem = ({ item }: { item: typeof mockCollections[0] }) => (
+  const renderCollectionItem = ({
+    item,
+  }: {
+    item: (typeof mockCollections)[0];
+  }) => (
     <TouchableOpacity style={styles.collectionCard}>
       <View style={[styles.collectionIcon, { backgroundColor: item.color }]} />
       <View style={styles.collectionInfo}>
@@ -140,7 +144,7 @@ export default function ExploreScreen() {
           <Button
             title="Create Your First Collection"
             onPress={() => {
-              console.log('Create collection');
+              console.log("Create collection");
             }}
             variant="primary"
             fullWidth
@@ -149,7 +153,7 @@ export default function ExploreScreen() {
           <Button
             title="Browse All Outfits"
             onPress={() => {
-              console.log('Browse outfits');
+              console.log("Browse outfits");
             }}
             variant="outline"
             fullWidth
@@ -167,8 +171,8 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: BrandColors.white,
   },
   loadingText: {
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   searchSection: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 24,
     gap: 12,
   },
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 14,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   filterText: {
     ...FontStyles.bodyMedium,
@@ -229,9 +233,9 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   sectionTitle: {
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     ...FontStyles.bodyMedium,
     color: BrandColors.primary,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
   trendsContainer: {
     paddingVertical: 8,
@@ -259,8 +263,8 @@ const styles = StyleSheet.create({
     color: BrandColors.primary,
   },
   collectionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: BrandColors.primaryWhite,
     borderRadius: 12,
     padding: 16,
@@ -295,5 +299,3 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 });
-
-

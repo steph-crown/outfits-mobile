@@ -12,8 +12,8 @@ import { router } from "expo-router";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { SearchIcon } from "@/components/icons/TabIcons";
-import { InputField } from "@/components/ui";
-import { OutfitCard } from "@/components/OutfitCard";
+import { InputField } from "@/components/common/InputField";
+import { OutfitCard } from "@/components/common/OutfitCard";
 import {
   dummyCollections,
   dummyOutfits,

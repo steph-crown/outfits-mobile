@@ -8,7 +8,7 @@ import React, {
   useCallback,
 } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { CustomBottomSheet } from "@/components/ui/BottomSheet";
+import { CustomBottomSheet } from "@/components/common/BottomSheet";
 
 interface BottomSheetConfig {
   title: string;
@@ -60,11 +60,14 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     setTimeout(() => setConfig(null), 300);
   }, [config]);
 
-  const contextValue: BottomSheetContextType = React.useMemo(() => ({
-    openBottomSheet,
-    closeBottomSheet,
-    isOpen,
-  }), [openBottomSheet, closeBottomSheet, isOpen]);
+  const contextValue: BottomSheetContextType = React.useMemo(
+    () => ({
+      openBottomSheet,
+      closeBottomSheet,
+      isOpen,
+    }),
+    [openBottomSheet, closeBottomSheet, isOpen]
+  );
 
   return (
     <BottomSheetContext.Provider value={contextValue}>

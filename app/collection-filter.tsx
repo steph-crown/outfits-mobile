@@ -1,6 +1,6 @@
 import { SearchIcon } from "@/components/icons/TabIcons";
-import { OutfitCard } from "@/components/OutfitCard";
-import { InputField } from "@/components/ui";
+import { OutfitCard } from "@/components/common/OutfitCard";
+import { InputField } from "@/components/common/InputField";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts } from "@/constants/Fonts";
 import { dummyCollections, dummyOutfits } from "@/types/outfit";

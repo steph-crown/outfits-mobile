@@ -87,10 +87,10 @@ export function useOutfitShareIntent() {
   const handleSharedUrl = async (url: string) => {
     console.log("🌐 Processing shared URL:", url);
 
-    // Navigate to create outfit screen with the shared URL
-    console.log("🧭 Navigating to create-outfit with URL:", url);
+    // Navigate to processing screen for URL processing
+    console.log("🧭 Navigating to processing screen with URL:", url);
     router.push({
-      pathname: "/create-outfit",
+      pathname: "/processing",
       params: {
         sharedUrl: url,
         source: "share_intent",

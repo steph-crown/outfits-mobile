@@ -2,7 +2,7 @@ import React, { createContext, useContext, ReactNode, useState } from "react";
 import { useBottomSheet } from "./BottomSheetContext";
 import { CreateCollectionForm } from "@/components/forms/CreateCollectionForm";
 import { collectionsApi } from "@/services/collectionsApi";
-import { toast } from "@/components/ui";
+import { toast } from "sonner-native";
 
 interface CollectionsContextType {
   openCreateCollection: () => void;

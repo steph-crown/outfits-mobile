@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BrandColors } from "@/constants/Colors";
 import { Fonts, FontStyles } from "@/constants/Fonts";
 import { FireIcon, EyeIcon } from "@/components/icons";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/common/Button";
 import { router } from "expo-router";
 import React from "react";
 

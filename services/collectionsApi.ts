@@ -1,4 +1,4 @@
-import api from '@/lib/api';
+import api from "@/lib/api";
 
 export interface CreateCollectionRequest {
   name: string;
@@ -25,21 +25,26 @@ export interface ApiResponse<T> {
 }
 
 export const collectionsApi = {
-  create: async (data: CreateCollectionRequest): Promise<ApiResponse<Collection>> => {
-    const response = await api.post('/collections', data);
+  create: async (
+    data: CreateCollectionRequest
+  ): Promise<ApiResponse<Collection>> => {
+    const response = await api.post("/collections", data);
     return response.data;
   },
 
   getAll: async (): Promise<ApiResponse<Collection[]>> => {
-    const response = await api.get('/collections');
+    const response = await api.get("/collections");
     return response.data;
   },
 
-  getPublic: async (limit?: number, offset?: number): Promise<ApiResponse<Collection[]>> => {
+  getPublic: async (
+    limit?: number,
+    offset?: number
+  ): Promise<ApiResponse<Collection[]>> => {
     const params = new URLSearchParams();
-    if (limit) params.append('limit', limit.toString());
-    if (offset) params.append('offset', offset.toString());
-    
+    if (limit) params.append("limit", limit.toString());
+    if (offset) params.append("offset", offset.toString());
+
     const response = await api.get(`/collections/public?${params.toString()}`);
     return response.data;
   },
@@ -49,7 +54,10 @@ export const collectionsApi = {
     return response.data;
   },
 
-  update: async (id: string, data: Partial<CreateCollectionRequest>): Promise<ApiResponse<Collection>> => {
+  update: async (
+    id: string,
+    data: Partial<CreateCollectionRequest>
+  ): Promise<ApiResponse<Collection>> => {
     const response = await api.patch(`/collections/${id}`, data);
     return response.data;
   },

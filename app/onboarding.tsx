@@ -1,5 +1,5 @@
 import React from "react";
-import { OnboardingScreen } from "@/components/OnboardingScreen";
+import { OnboardingScreen } from "@/components/layout/OnboardingScreen";
 import { router } from "expo-router";
 
 export default function OnboardingPage() {
