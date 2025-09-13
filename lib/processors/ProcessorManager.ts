@@ -6,8 +6,7 @@ import {
 } from "./types";
 import { TikTokProcessor } from "./TikTokProcessor";
 import { PinterestProcessor } from "./PinterestProcessor";
-// Import other processors as they're created
-// import { InstagramProcessor } from './InstagramProcessor';
+import { InstagramProcessor } from "./InstagramProcessor";
 
 export class ProcessorManager {
   private processors: Map<SupportedPlatform, PlatformProcessor> = new Map();
@@ -15,8 +14,7 @@ export class ProcessorManager {
   constructor() {
     this.registerProcessor(new TikTokProcessor());
     this.registerProcessor(new PinterestProcessor());
-    // Register other processors as they're created
-    // this.registerProcessor(new InstagramProcessor());
+    this.registerProcessor(new InstagramProcessor());
   }
 
   private registerProcessor(processor: PlatformProcessor): void {
